@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ t.services_title }} - {{ t.site_title }}{% endblock %}
+
+{% block content %}
+<main>
+  <!-- Page Banner -->
+  <section class="page-banner"
+    style="background-image: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1920&q=80');">
+    <div class="page-banner-overlay"></div>
+    <div class="container">
+      <h1 class="page-banner-title">{{ t.nav_services }}</h1>
+      <div class="breadcrumbs">
+        <a href="{% url 'home' %}">{{ t.nav_home }}</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>{{ t.nav_all_tours }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filterable Tour Packages Grid -->
+  <section class="section" id="packages-grid">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-subtitle"><i class="fas fa-suitcase-rolling"></i> {{ t.feat_subtitle }}</span>
+        <h2 class="section-title">{{ t.services_title }}</h2>
+        <p class="section-desc">{{ t.services_desc }}</p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex-center" style="margin-bottom: 3rem; flex-wrap: wrap; gap: 0.6rem;">
+        <button class="btn btn-sm btn-primary filter-btn active" data-filter="all">{{ t.filter_all }}</button>
+        {% for cat in categories %}
+        <button class="btn btn-sm btn-outline filter-btn" data-filter="{{ cat.slug }}">{{ cat.display_name|default:cat.name }}</button>
+        {% empty %}
+        <button class="btn btn-sm btn-outline filter-btn" data-filter="europe">{{ t.filter_europe }}</button>
+        <button class="btn btn-sm btn-outline filter-btn" data-filter="beach">{{ t.filter_beach }}</button>
+        <button class="btn btn-sm btn-outline filter-btn" data-filter="cultural">{{ t.filter_cultural }}</button>
+        {% endfor %}
+      </div>
+
+      <!-- Tour Cards Grid -->
+      <div class="grid grid-3">
+        {% for tour in tours %}
+        <div class="tour-card filterable-item reveal" data-category="{{ tour.category.slug|default:'all' }}">
+          <div class="tour-card-thumb">
+            <img
+              src="{% if tour.main_image.url %}{{ tour.main_image.url }}{% elif tour.main_image %}{{ tour.main_image }}{% else %}https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80{% endif %}"
+              alt="{{ tour.display_title|default:tour.title }}"
+              onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+            <div class="tour-card-badges">
+              {% if tour.is_featured %}
+              <span class="badge badge-accent"><i class="fas fa-star"></i> {{ t.tour_featured }}</span>
+              {% endif %}
+              <span class="badge badge-glass">{{ tour.duration_days|default:'7' }} {{ t.tour_days }} / {{
+                tour.duration_nights|default:'6' }} {{ t.tour_nights }}</span>
+            </div>
+            <div class="tour-card-price-tag">
+              {{ tour.price }} AZN <span>{{ t.tour_per_person }}</span>
+            </div>
+          </div>
+          <div class="tour-card-body">
+            <div class="tour-meta">
+              <span>
+                <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i>
+                {{ tour.destination.name|default:tour.destination|default:'Europe' }}
+              </span>
+              <div class="tour-rating">
+                <i class="fas fa-star"></i> {{ tour.rating|default:'4.9' }} ({{ tour.reviews_count|default:'45' }} {{ t.tour_reviews }})
+              </div>
+            </div>
+            <h3 class="tour-title">
+              <a href="{% if tour.slug %}{% url 'service_detail' tour.slug %}{% else %}{% url 'services' %}{% endif %}">{{
+                tour.display_title|default:tour.title }}</a>
+            </h3>
+            <p class="tour-desc">{{ tour.display_short_description|default:tour.short_description|default:tour.description|truncatewords:20 }}</p>
+
+            <div class="tour-features">
+              <span class="tour-feature-item"><i class="fas fa-plane"></i> {{ t.tour_feat_flight }}</span>
+              <span class="tour-feature-item"><i class="fas fa-hotel"></i> {{ t.tour_feat_hotel }}</span>
+              <span class="tour-feature-item"><i class="fas fa-utensils"></i> {{ t.tour_feat_breakfast }}</span>
+              <span class="tour-feature-item"><i class="fas fa-bus"></i> {{ t.tour_feat_transfer }}</span>
+            </div>
+
+            <div class="tour-card-footer">
+              <a href="{% if tour.slug %}{% url 'service_detail' tour.slug %}{% else %}{% url 'services' %}{% endif %}"
+                class="btn btn-outline btn-sm">{{ t.tour_view_details }}</a>
+              <button class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ tour.display_title|default:tour.title }}">
+                <i class="fas fa-calendar-check"></i> {{ t.tour_book_now }}
+              </button>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <!-- Fallback Europe Tour -->
+        <div class="tour-card filterable-item reveal" data-category="europe">
+          <div class="tour-card-thumb">
+            <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80"
+              alt="Alps"
+              onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+            <div class="tour-card-badges">
+              <span class="badge badge-accent"><i class="fas fa-star"></i> {{ t.tour_featured }}</span>
+              <span class="badge badge-glass">7 {{ t.tour_days }} / 6 {{ t.tour_nights }}</span>
+            </div>
+            <div class="tour-card-price-tag">
+              1,290 AZN <span>{{ t.tour_per_person }}</span>
+            </div>
+          </div>
+          <div class="tour-card-body">
+            <div class="tour-meta">
+              <span><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Sürix, Como</span>
+              <div class="tour-rating">
+                <i class="fas fa-star"></i> 4.9 (128 {{ t.tour_reviews }})
+              </div>
+            </div>
+            <h3 class="tour-title"><a href="{% url 'services' %}">{{ t.tour_fallback_europe_title }}</a></h3>
+            <p class="tour-desc">{{ t.tour_fallback_europe_desc }}</p>
+
+            <div class="tour-features">
+              <span class="tour-feature-item"><i class="fas fa-plane"></i> {{ t.tour_feat_flight }}</span>
+              <span class="tour-feature-item"><i class="fas fa-hotel"></i> {{ t.tour_feat_hotel }}</span>
+              <span class="tour-feature-item"><i class="fas fa-utensils"></i> {{ t.tour_feat_breakfast }}</span>
+              <span class="tour-feature-item"><i class="fas fa-bus"></i> {{ t.tour_feat_transfer }}</span>
+            </div>
+
+            <div class="tour-card-footer">
+              <a href="{% url 'services' %}" class="btn btn-outline btn-sm">{{ t.tour_view_details }}</a>
+              <button class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ t.tour_fallback_europe_title }}">
+                <i class="fas fa-calendar-check"></i> {{ t.tour_book_now }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fallback Beach/Tropics Tour -->
+        <div class="tour-card filterable-item reveal" data-category="beach">
+          <div class="tour-card-thumb">
+            <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80"
+              alt="Maldives"
+              onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+            <div class="tour-card-badges">
+              <span class="badge badge-accent"><i class="fas fa-umbrella-beach"></i> {{ t.filter_beach }}</span>
+              <span class="badge badge-glass">6 {{ t.tour_days }} / 5 {{ t.tour_nights }}</span>
+            </div>
+            <div class="tour-card-price-tag">
+              2,150 AZN <span>{{ t.tour_per_person }}</span>
+            </div>
+          </div>
+          <div class="tour-card-body">
+            <div class="tour-meta">
+              <span><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Maldiv</span>
+              <div class="tour-rating">
+                <i class="fas fa-star"></i> 5.0 (86 {{ t.tour_reviews }})
+              </div>
+            </div>
+            <h3 class="tour-title"><a href="{% url 'services' %}">{{ t.tour_fallback_maldives_title }}</a></h3>
+            <p class="tour-desc">{{ t.tour_fallback_maldives_desc }}</p>
+
+            <div class="tour-features">
+              <span class="tour-feature-item"><i class="fas fa-plane"></i> {{ t.tour_feat_flight }}</span>
+              <span class="tour-feature-item"><i class="fas fa-hotel"></i> {{ t.tour_feat_villa }}</span>
+              <span class="tour-feature-item"><i class="fas fa-utensils"></i> {{ t.tour_feat_all_inc }}</span>
+              <span class="tour-feature-item"><i class="fas fa-ship"></i> {{ t.tour_feat_boat }}</span>
+            </div>
+
+            <div class="tour-card-footer">
+              <a href="{% url 'services' %}" class="btn btn-outline btn-sm">{{ t.tour_view_details }}</a>
+              <button class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ t.tour_fallback_maldives_title }}">
+                <i class="fas fa-calendar-check"></i> {{ t.tour_book_now }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fallback Cultural Tour -->
+        <div class="tour-card filterable-item reveal" data-category="cultural">
+          <div class="tour-card-thumb">
+            <img src="https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=800&q=80"
+              alt="Cappadocia"
+              onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+            <div class="tour-card-badges">
+              <span class="badge badge-accent"><i class="fas fa-landmark"></i> {{ t.filter_cultural }}</span>
+              <span class="badge badge-glass">4 {{ t.tour_days }} / 3 {{ t.tour_nights }}</span>
+            </div>
+            <div class="tour-card-price-tag">
+              480 AZN <span>{{ t.tour_per_person }}</span>
+            </div>
+          </div>
+          <div class="tour-card-body">
+            <div class="tour-meta">
+              <span><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Kapadokya</span>
+              <div class="tour-rating">
+                <i class="fas fa-star"></i> 4.8 (94 {{ t.tour_reviews }})
+              </div>
+            </div>
+            <h3 class="tour-title"><a href="{% url 'services' %}">{{ t.tour_fallback_cappadocia_title }}</a></h3>
+            <p class="tour-desc">{{ t.tour_fallback_cappadocia_desc }}</p>
+
+            <div class="tour-features">
+              <span class="tour-feature-item"><i class="fas fa-plane"></i> {{ t.tour_feat_ticket }}</span>
+              <span class="tour-feature-item"><i class="fas fa-hotel"></i> {{ t.tour_feat_cave }}</span>
+              <span class="tour-feature-item"><i class="fas fa-utensils"></i> {{ t.tour_feat_breakfast }}</span>
+              <span class="tour-feature-item"><i class="fas fa-user-tie"></i> {{ t.tour_feat_guide }}</span>
+            </div>
+
+            <div class="tour-card-footer">
+              <a href="{% url 'services' %}" class="btn btn-outline btn-sm">{{ t.tour_view_details }}</a>
+              <button class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ t.tour_fallback_cappadocia_title }}">
+                <i class="fas fa-calendar-check"></i> {{ t.tour_book_now }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fallback Honeymoon Tour -->
+        <div class="tour-card filterable-item reveal" data-category="honeymoon">
+          <div class="tour-card-thumb">
+            <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80"
+              alt="Bali"
+              onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+            <div class="tour-card-badges">
+              <span class="badge badge-accent"><i class="fas fa-heart"></i> {{ t.filter_honeymoon }}</span>
+              <span class="badge badge-glass">9 {{ t.tour_days }} / 8 {{ t.tour_nights }}</span>
+            </div>
+            <div class="tour-card-price-tag">
+              1,850 AZN <span>{{ t.tour_per_person }}</span>
+            </div>
+          </div>
+          <div class="tour-card-body">
+            <div class="tour-meta">
+              <span><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Bali</span>
+              <div class="tour-rating">
+                <i class="fas fa-star"></i> 5.0 (62 {{ t.tour_reviews }})
+              </div>
+            </div>
+            <h3 class="tour-title"><a href="{% url 'services' %}">{{ t.tour_fallback_bali_title }}</a></h3>
+            <p class="tour-desc">{{ t.tour_fallback_bali_desc }}</p>
+
+            <div class="tour-features">
+              <span class="tour-feature-item"><i class="fas fa-plane"></i> {{ t.tour_feat_flight }}</span>
+              <span class="tour-feature-item"><i class="fas fa-hotel"></i> {{ t.tour_feat_villa }}</span>
+              <span class="tour-feature-item"><i class="fas fa-spa"></i> {{ t.tour_feat_spa }}</span>
+              <span class="tour-feature-item"><i class="fas fa-camera"></i> {{ t.tour_feat_photo }}</span>
+            </div>
+
+            <div class="tour-card-footer">
+              <a href="{% url 'services' %}" class="btn btn-outline btn-sm">{{ t.tour_view_details }}</a>
+              <button class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ t.tour_fallback_bali_title }}">
+                <i class="fas fa-calendar-check"></i> {{ t.tour_book_now }}
+              </button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Frequently Asked Questions (FAQ) Accordion -->
+  <section class="section section-bg">
+    <div class="container" style="max-width: 860px;">
+      <div class="section-header reveal">
+        <span class="section-subtitle"><i class="fas fa-question-circle"></i> {{ t.faq_subtitle }}</span>
+        <h2 class="section-title">{{ t.faq_title }}</h2>
+        <p class="section-desc">{{ t.faq_desc }}</p>
+      </div>
+
+      <div class="itinerary-timeline" style="padding-left: 0;">
+        <!-- FAQ 1 -->
+        <div class="itinerary-item active reveal">
+          <div class="itinerary-header">
+            <span class="itinerary-day">
+              <i class="fas fa-passport" style="color: var(--primary);"></i> {{ t.faq_1_q }}
+            </span>
+            <i class="fas fa-chevron-down itinerary-toggle-icon"></i>
+          </div>
+          <div class="itinerary-body">
+            {{ t.faq_1_a }}
+          </div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="itinerary-item reveal">
+          <div class="itinerary-header">
+            <span class="itinerary-day">
+              <i class="fas fa-credit-card" style="color: var(--primary);"></i> {{ t.faq_2_q }}
+            </span>
+            <i class="fas fa-chevron-down itinerary-toggle-icon"></i>
+          </div>
+          <div class="itinerary-body">
+            {{ t.faq_2_a }}
+          </div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="itinerary-item reveal">
+          <div class="itinerary-header">
+            <span class="itinerary-day">
+              <i class="fas fa-undo-alt" style="color: var(--primary);"></i> {{ t.faq_3_q }}
+            </span>
+            <i class="fas fa-chevron-down itinerary-toggle-icon"></i>
+          </div>
+          <div class="itinerary-body">
+            {{ t.faq_3_a }}
+          </div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="itinerary-item reveal">
+          <div class="itinerary-header">
+            <span class="itinerary-day">
+              <i class="fas fa-user-shield" style="color: var(--primary);"></i> {{ t.faq_4_q }}
+            </span>
+            <i class="fas fa-chevron-down itinerary-toggle-icon"></i>
+          </div>
+          <div class="itinerary-body">
+            {{ t.faq_4_a }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Banner -->
+  <section class="section">
+    <div class="container">
+      <div class="cta-banner reveal"
+        style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+        <h2 style="font-size: 2.4rem; color: #ffffff; margin-bottom: 1rem;">{{ t.cta_not_found_title }}</h2>
+        <p style="color: rgba(255, 255, 255, 0.88); max-width: 600px; margin-bottom: 2rem; font-size: 1.05rem;">
+          {{ t.cta_not_found_desc }}
+        </p>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+          <a href="{% url 'contact' %}" class="btn btn-accent btn-lg"><i class="fas fa-headset"></i> {{ t.cta_custom_offer }}</a>
+          <a href="tel:+994125557788" class="btn btn-outline-white btn-lg"><i class="fas fa-phone-alt"></i> {{ t.cta_call_us }}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

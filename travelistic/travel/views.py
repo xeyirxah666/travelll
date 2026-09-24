@@ -1,0 +1,152 @@
+from django.shortcuts import render, get_object_or_404, redirect
+from django.conf import settings
+from django.utils import translation
+from urllib.parse import urlparse
+from .models import Tour, Category, Destination, BlogPost, BlogComment, Testimonial, ContactMessage
+from .translations import (
+    get_translations,
+    localize_tour_object,
+    localize_category_name,
+    localize_destination_name,
+    localize_blog_post,
+)
+
+def set_language_view(request, lang_code):
+    """
+    Switch active language and redirect back to previous page.
+    Stores language preference in both session and cookie.
+    """
+    valid_languages = ['az', 'en', 'ru']
+    if lang_code not in valid_languages:
+        lang_code = 'az'
+
+    # Determine redirect target
+    next_url = request.GET.get('next') or request.POST.get('next') or request.META.get('HTTP_REFERER') or '/'
+    
+    # Security check: only allow local relative redirects or same domain
+    parsed = urlparse(next_url)
+    if parsed.netloc and parsed.netloc != request.get_host():
+        next_url = '/'
+
+    response = redirect(next_url)
+
+    # Set session
+    if hasattr(request, 'session'):
+        request.session['django_language'] = lang_code
+
+    # Set translation in thread
+    translation.activate(lang_code)
+    request.LANGUAGE_CODE = lang_code
+
+    # Set cookie
+    cookie_name = getattr(settings, 'LANGUAGE_COOKIE_NAME', 'django_language')
+    cookie_age = getattr(settings, 'LANGUAGE_COOKIE_AGE', 365 * 24 * 60 * 60)
+    response.set_cookie(
+        cookie_name,
+        lang_code,
+        max_age=cookie_age,
+        path='/',
+        samesite='Lax'
+    )
+    return response
+
+def _get_current_lang(request):
+    if hasattr(request, 'session') and request.session.get('django_language'):
+        return request.session.get('django_language')
+    if request.COOKIES.get('django_language'):
+        return request.COOKIES.get('django_language')
+    return getattr(request, 'LANGUAGE_CODE', 'az')
+
+def home_view(request):
+    lang = _get_current_lang(request)
+    featured_tours = list(Tour.objects.filter(is_featured=True)[:6])
+    for tour in featured_tours:
+        localize_tour_object(tour, lang)
+
+    categories = list(Category.objects.all()[:4])
+    for cat in categories:
+        cat.display_name = localize_category_name(cat.name, lang)
+
+    destinations = list(Destination.objects.all()[:3])
+    for dest in destinations:
+        dest.display_name = localize_destination_name(dest.name, lang)
+
+    testimonials = list(Testimonial.objects.all()[:3])
+    latest_blogs = list(BlogPost.objects.order_by('-created_at')[:3])
+    for post in latest_blogs:
+        localize_blog_post(post, lang)
+
+    context = {
+        'featured_tours': featured_tours,
+        'categories': categories,
+        'destinations': destinations,
+        'testimonials': testimonials,
+        'latest_blogs': latest_blogs,
+    }
+    return render(request, 'index.html', context)
+
+def services_view(request):
+    lang = _get_current_lang(request)
+    category_slug = request.GET.get('category')
+    tours = Tour.objects.all()
+    if category_slug and category_slug != 'all':
+        tours = tours.filter(category__slug=category_slug)
+    
+    tour_list = list(tours)
+    for tour in tour_list:
+        localize_tour_object(tour, lang)
+
+    categories = list(Category.objects.all())
+    for cat in categories:
+        cat.display_name = localize_category_name(cat.name, lang)
+
+    return render(request, 'services.html', {'tours': tour_list, 'categories': categories})
+
+def service_detail_view(request, slug):
+    lang = _get_current_lang(request)
+    tour = get_object_or_404(Tour, slug=slug)
+    localize_tour_object(tour, lang)
+
+    related_tours = list(Tour.objects.exclude(id=tour.id)[:3])
+    for rt in related_tours:
+        localize_tour_object(rt, lang)
+
+    return render(request, 'service-single.html', {'tour': tour, 'related_tours': related_tours})
+
+def about_view(request):
+    lang = _get_current_lang(request)
+    t = get_translations(lang)
+    stats = {
+        'travelers': '8,500+',
+        'visas': '4,200+',
+        'routes': '54' + t.get('stats_suffix_countries', ' Ölkə'),
+        'hotels': '150+',
+    }
+    return render(request, 'about.html', {'stats': stats})
+
+def blog_view(request):
+    lang = _get_current_lang(request)
+    posts = list(BlogPost.objects.all().order_by('-created_at'))
+    for post in posts:
+        localize_blog_post(post, lang)
+    categories = list(Category.objects.all())
+    for cat in categories:
+        cat.display_name = localize_category_name(cat.name, lang)
+    return render(request, 'blog.html', {'posts': posts, 'categories': categories})
+
+def blog_detail_view(request, slug=''):
+    lang = _get_current_lang(request)
+    post = None
+    if slug:
+        post = BlogPost.objects.filter(slug=slug).first()
+    if not post:
+        post = BlogPost.objects.first()
+    if post:
+        localize_blog_post(post, lang)
+    recent_posts = list(BlogPost.objects.exclude(id=post.id if post else 0)[:3])
+    for rp in recent_posts:
+        localize_blog_post(rp, lang)
+    return render(request, 'blog-single.html', {'post': post, 'recent_posts': recent_posts})
+
+def contact_view(request):
+    return render(request, 'contact.html')

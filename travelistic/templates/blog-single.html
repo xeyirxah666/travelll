@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.display_title|default:t.blog_1_title }} - {{ t.site_title }}{% endblock %}
+
+{% block content %}
+<main>
+    <!-- Page Header & Title Container -->
+    <div class="section-sm section-bg" style="border-bottom: 1px solid var(--border-color);">
+      <div class="container" style="max-width: 900px;">
+        <div class="breadcrumbs" style="background: var(--bg-light); color: var(--text-muted); margin-bottom: 1.5rem;">
+          <a href="{% url 'home' %}" style="color: var(--primary);">{{ t.nav_home }}</a>
+          <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+          <a href="{% url 'blog' %}" style="color: var(--primary);">{{ t.nav_blog }}</a>
+          <i class="fas fa-chevron-right" style="color: var(--text-muted);"></i>
+          <span>{{ t.blog_detail_article }}</span>
+        </div>
+
+        <div class="article-header">
+          <span class="badge badge-accent" style="margin-bottom: 1rem;"><i class="fas fa-feather-alt"></i> {{ t.blog_detail_badge }}</span>
+          <h1 style="font-size: 2.8rem; margin-bottom: 1.25rem; line-height: 1.25;">
+            {{ post.display_title|default:t.blog_1_title }}
+          </h1>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+              <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=120&q=80" alt="{{ post.author|default:'Fərid Mahmudov' }}" style="width: 48px; height: 48px; border-radius: var(--radius-full); object-fit: cover;">
+              <div>
+                <strong style="display: block; color: var(--dark); font-size: 0.95rem;">{{ post.author|default:'Fərid Mahmudov' }}</strong>
+                <span style="font-size: 0.82rem; color: var(--text-muted);">{{ t.blog_detail_author_role }}</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
+              <span><i class="far fa-calendar-alt" style="color: var(--accent);"></i> {{ post.created_at|date:"d M Y"|default:'18 Aug 2026' }}</span>
+              <span><i class="far fa-clock" style="color: var(--accent);"></i> {{ post.reading_time|default:'6' }} {{ t.blog_min_read }}</span>
+              <span><i class="far fa-comment" style="color: var(--accent);"></i> {{ t.blog_detail_comments_count }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Content Section -->
+    <article class="section">
+      <div class="container" style="max-width: 900px;">
+        <!-- Featured Image -->
+        <div class="article-main-thumb reveal">
+          <img src="{% if post.image.url %}{{ post.image.url }}{% elif post.image %}{{ post.image }}{% else %}https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=1200&q=80{% endif %}" alt="{{ post.display_title|default:t.blog_1_title }}">
+        </div>
+
+        <div class="article-body">
+          <p class="reveal">
+            {{ t.blog_detail_p1 }}
+          </p>
+
+          <p class="reveal">
+            {{ t.blog_detail_p2 }}
+          </p>
+
+          <!-- Blockquote -->
+          <blockquote class="article-quote reveal">
+            "{{ t.blog_detail_quote }}"
+          </blockquote>
+
+          <h2 class="reveal">{{ t.blog_detail_h2_1 }}</h2>
+          <p class="reveal">
+            {{ t.blog_detail_p3 }}
+          </p>
+
+          <ul style="margin: 1.5rem 0; padding-left: 1.5rem; line-height: 1.8;">
+            <li style="margin-bottom: 0.5rem;">{{ t.blog_detail_season_1 }}</li>
+            <li style="margin-bottom: 0.5rem;">{{ t.blog_detail_season_2 }}</li>
+            <li style="margin-bottom: 0.5rem;">{{ t.blog_detail_season_3 }}</li>
+          </ul>
+
+          <!-- Callout Alert -->
+          <div class="article-callout reveal">
+            <i class="fas fa-lightbulb"></i>
+            <div>
+              <strong style="color: var(--accent); font-size: 1.05rem; display: block; margin-bottom: 0.35rem;">{{ t.blog_detail_tip_title }}</strong>
+              <p style="font-size: 0.95rem; color: var(--dark); margin: 0;">
+                {{ t.blog_detail_tip_desc }}
+              </p>
+            </div>
+          </div>
+
+          <h2 class="reveal">{{ t.blog_detail_h2_2 }}</h2>
+          <p class="reveal">
+            {{ t.blog_detail_p4 }}
+          </p>
+
+          <p class="reveal">
+            {{ t.blog_detail_p5 }}
+          </p>
+
+          <h2 class="reveal">{{ t.blog_detail_h2_3 }}</h2>
+          <p class="reveal">
+            {{ t.blog_detail_p6 }}
+          </p>
+          <div class="grid grid-2" style="margin: 1.5rem 0; gap: 1rem;">
+            <div style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--primary); margin-bottom: 0.5rem;">{{ t.blog_detail_pkg_std_title }}</h4>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">{{ t.blog_detail_pkg_std_desc }}</p>
+              <strong style="color: var(--accent); font-size: 1.2rem; display: block; margin-top: 0.75rem;">150 € – 220 €</strong>
+            </div>
+
+            <div style="background: var(--bg-white); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <h4 style="color: var(--primary); margin-bottom: 0.5rem;">{{ t.blog_detail_pkg_vip_title }}</h4>
+              <p style="font-size: 0.9rem; color: var(--text-muted);">{{ t.blog_detail_pkg_vip_desc }}</p>
+              <strong style="color: var(--accent); font-size: 1.2rem; display: block; margin-top: 0.75rem;">300 € – 650 €</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Share Bar -->
+        <div class="social-share-bar reveal">
+          <span style="font-weight: 700; color: var(--dark);"><i class="fas fa-share-alt"></i> {{ t.blog_share_title }}</span>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <a href="https://wa.me/?text={{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" style="padding: 0.4rem 0.9rem;"><i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp</a>
+            <a href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" style="padding: 0.4rem 0.9rem;"><i class="fab fa-telegram-plane" style="color: #0088cc;"></i> Telegram</a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" style="padding: 0.4rem 0.9rem;"><i class="fab fa-facebook-f" style="color: #1877F2;"></i> Facebook</a>
+            <button id="copy-link-btn" class="btn btn-sm btn-primary" style="padding: 0.4rem 0.9rem;"><i class="fas fa-link"></i> {{ t.blog_copy_link }}</button>
+          </div>
+        </div>
+
+        <!-- Author Bio Box -->
+        <div class="author-bio-box reveal">
+          <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80" alt="{{ post.author|default:'Fərid Mahmudov' }}" class="author-bio-avatar">
+          <div>
+            <h4 style="font-size: 1.2rem; margin-bottom: 0.35rem;">{{ post.author|default:'Fərid Mahmudov' }}</h4>
+            <p style="font-size: 0.85rem; color: var(--accent); font-weight: 600; margin-bottom: 0.5rem;">{{ t.blog_detail_author_role }}</p>
+            <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6;">
+              {{ t.blog_author_bio }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="comments-section reveal">
+          <h3 style="font-size: 1.6rem; margin-bottom: 2rem;"><i class="far fa-comments"></i> {{ t.blog_comments_title }} (2)</h3>
+
+          <div class="comment-item">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" alt="Aynur Rzayeva" class="comment-avatar">
+            <div class="comment-content">
+              <div class="comment-author-name">Aynur Rzayeva</div>
+              <div class="comment-date">20 Aug 2026</div>
+              <p style="font-size: 0.95rem; color: var(--text-main);">
+                {{ t.blog_comment_1_text }}
+              </p>
+            </div>
+          </div>
+
+          <div class="comment-item">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Tural Həsənov" class="comment-avatar">
+            <div class="comment-content">
+              <div class="comment-author-name">Tural Həsənov</div>
+              <div class="comment-date">21 Aug 2026</div>
+              <p style="font-size: 0.95rem; color: var(--text-main);">
+                {{ t.blog_comment_2_text }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Add Comment Form -->
+          <div style="background: #ffffff; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); margin-top: 2rem;">
+            <h4 style="font-size: 1.25rem; margin-bottom: 1.25rem;">{{ t.blog_add_comment_title }}</h4>
+            <form id="comment-form">
+              <div class="grid grid-2" style="gap: 1rem; margin-bottom: 1rem;">
+                <div>
+                  <label class="form-label">{{ t.blog_comment_name }}</label>
+                  <input type="text" class="form-input" placeholder="{{ t.blog_comment_name_ph }}" required>
+                </div>
+                <div>
+                  <label class="form-label">{{ t.blog_comment_email }}</label>
+                  <input type="email" class="form-input" placeholder="{{ t.blog_comment_email_ph }}" required>
+                </div>
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <label class="form-label">{{ t.blog_comment_msg }}</label>
+                <textarea class="form-textarea" rows="4" placeholder="{{ t.blog_comment_msg_ph }}" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> {{ t.blog_comment_submit }}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Related Articles -->
+    <section class="section section-bg">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-subtitle"><i class="fas fa-book-reader"></i> {{ t.blog_related_subtitle }}</span>
+          <h2 class="section-title">{{ t.blog_related_title }}</h2>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="blog-card reveal">
+            <div class="blog-card-thumb">
+              <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80" alt="Visa">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span><i class="fas fa-tag"></i> {{ t.blog_2_tag }}</span>
+                <span><i class="far fa-calendar-alt"></i> 12 Aug 2026</span>
+              </div>
+              <h3 class="blog-card-title"><a href="{% url 'blog' %}">{{ t.blog_2_title }}</a></h3>
+              <p class="blog-card-desc">{{ t.blog_2_desc }}</p>
+              <div class="blog-card-footer">
+                <a href="{% url 'blog' %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="blog-card reveal">
+            <div class="blog-card-thumb">
+              <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80" alt="Bali">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span><i class="fas fa-tag"></i> {{ t.blog_3_tag }}</span>
+                <span><i class="far fa-calendar-alt"></i> 05 Aug 2026</span>
+              </div>
+              <h3 class="blog-card-title"><a href="{% url 'blog' %}">{{ t.blog_3_title }}</a></h3>
+              <p class="blog-card-desc">{{ t.blog_3_desc }}</p>
+              <div class="blog-card-footer">
+                <a href="{% url 'blog' %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="blog-card reveal">
+            <div class="blog-card-thumb">
+              <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80" alt="Swiss">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span><i class="fas fa-tag"></i> {{ t.blog_6_tag }}</span>
+                <span><i class="far fa-calendar-alt"></i> 14 Jul 2026</span>
+              </div>
+              <h3 class="blog-card-title"><a href="{% url 'blog' %}">{{ t.blog_6_title }}</a></h3>
+              <p class="blog-card-desc">{{ t.blog_6_desc }}</p>
+              <div class="blog-card-footer">
+                <a href="{% url 'blog' %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+</main>
+{% endblock %}

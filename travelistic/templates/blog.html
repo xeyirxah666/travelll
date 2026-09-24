@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ t.blog_title }} - {{ t.site_title }}{% endblock %}
+
+{% block content %}
+<main>
+    <!-- Page Banner -->
+    <section class="page-banner" style="background-image: url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1920&q=80');">
+      <div class="page-banner-overlay"></div>
+      <div class="container">
+        <h1 class="page-banner-title">{{ t.blog_title }}</h1>
+        <div class="breadcrumbs">
+          <a href="{% url 'home' %}">{{ t.nav_home }}</a>
+          <i class="fas fa-chevron-right"></i>
+          <span>{{ t.blog_breadcrumbs_all }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Blog Grid + Sidebar -->
+    <section class="section">
+      <div class="container">
+        <div class="grid grid-sidebar">
+          <!-- Blog Posts List Column -->
+          <div>
+            <div class="grid grid-2">
+              {% for post in posts %}
+              <div class="blog-card reveal">
+                <div class="blog-card-thumb">
+                  <img src="{% if post.image.url %}{{ post.image.url }}{% elif post.image %}{{ post.image }}{% else %}https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=800&q=80{% endif %}" alt="{{ post.display_title|default:post.title }}" onerror="this.src='https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=800&q=80';">
+                </div>
+                <div class="blog-card-body">
+                  <div class="blog-meta">
+                    <span><i class="fas fa-tag"></i> {{ post.author }}</span>
+                    <span><i class="far fa-calendar-alt"></i> {{ post.created_at|date:"d M Y" }}</span>
+                  </div>
+                  <h3 class="blog-card-title">
+                    <a href="{% if post.slug %}{% url 'blog_detail' post.slug %}{% else %}{% url 'blog' %}{% endif %}">{{ post.display_title|default:post.title }}</a>
+                  </h3>
+                  <p class="blog-card-desc">
+                    {{ post.display_short_summary|default:post.short_summary|default:post.content|truncatewords:20 }}
+                  </p>
+                  <div class="blog-card-footer">
+                    <a href="{% if post.slug %}{% url 'blog_detail' post.slug %}{% else %}{% url 'blog' %}{% endif %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> {{ post.reading_time|default:'5' }} {{ t.blog_min_read }}</span>
+                  </div>
+                </div>
+              </div>
+              {% empty %}
+              <!-- Post 1 -->
+              <div class="blog-card reveal">
+                <div class="blog-card-thumb">
+                  <img src="https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=800&q=80" alt="Cappadocia">
+                </div>
+                <div class="blog-card-body">
+                  <div class="blog-meta">
+                    <span><i class="fas fa-tag"></i> {{ t.blog_1_tag }}</span>
+                    <span><i class="far fa-calendar-alt"></i> 18 Aug 2026</span>
+                  </div>
+                  <h3 class="blog-card-title"><a href="{% url 'blog' %}">{{ t.blog_1_title }}</a></h3>
+                  <p class="blog-card-desc">{{ t.blog_1_desc }}</p>
+                  <div class="blog-card-footer">
+                    <a href="{% url 'blog' %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> 5 {{ t.blog_min_read }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Post 2 -->
+              <div class="blog-card reveal">
+                <div class="blog-card-thumb">
+                  <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80" alt="Visa">
+                </div>
+                <div class="blog-card-body">
+                  <div class="blog-meta">
+                    <span><i class="fas fa-tag"></i> {{ t.blog_2_tag }}</span>
+                    <span><i class="far fa-calendar-alt"></i> 12 Aug 2026</span>
+                  </div>
+                  <h3 class="blog-card-title"><a href="{% url 'blog' %}">{{ t.blog_2_title }}</a></h3>
+                  <p class="blog-card-desc">{{ t.blog_2_desc }}</p>
+                  <div class="blog-card-footer">
+                    <a href="{% url 'blog' %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> 7 {{ t.blog_min_read }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Post 3 -->
+              <div class="blog-card reveal">
+                <div class="blog-card-thumb">
+                  <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80" alt="Bali">
+                </div>
+                <div class="blog-card-body">
+                  <div class="blog-meta">
+                    <span><i class="fas fa-tag"></i> {{ t.blog_3_tag }}</span>
+                    <span><i class="far fa-calendar-alt"></i> 05 Aug 2026</span>
+                  </div>
+                  <h3 class="blog-card-title"><a href="{% url 'blog' %}">{{ t.blog_3_title }}</a></h3>
+                  <p class="blog-card-desc">{{ t.blog_3_desc }}</p>
+                  <div class="blog-card-footer">
+                    <a href="{% url 'blog' %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> 6 {{ t.blog_min_read }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Post 4 -->
+              <div class="blog-card reveal">
+                <div class="blog-card-thumb">
+                  <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80" alt="Dubai">
+                </div>
+                <div class="blog-card-body">
+                  <div class="blog-meta">
+                    <span><i class="fas fa-tag"></i> {{ t.blog_4_tag }}</span>
+                    <span><i class="far fa-calendar-alt"></i> 29 Jul 2026</span>
+                  </div>
+                  <h3 class="blog-card-title"><a href="{% url 'blog' %}">{{ t.blog_4_title }}</a></h3>
+                  <p class="blog-card-desc">{{ t.blog_4_desc }}</p>
+                  <div class="blog-card-footer">
+                    <a href="{% url 'blog' %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> 4 {{ t.blog_min_read }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Post 5 -->
+              <div class="blog-card reveal">
+                <div class="blog-card-thumb">
+                  <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80" alt="Rome">
+                </div>
+                <div class="blog-card-body">
+                  <div class="blog-meta">
+                    <span><i class="fas fa-tag"></i> {{ t.blog_5_tag }}</span>
+                    <span><i class="far fa-calendar-alt"></i> 20 Jul 2026</span>
+                  </div>
+                  <h3 class="blog-card-title"><a href="{% url 'blog' %}">{{ t.blog_5_title }}</a></h3>
+                  <p class="blog-card-desc">{{ t.blog_5_desc }}</p>
+                  <div class="blog-card-footer">
+                    <a href="{% url 'blog' %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> 5 {{ t.blog_min_read }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Post 6 -->
+              <div class="blog-card reveal">
+                <div class="blog-card-thumb">
+                  <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80" alt="Switzerland">
+                </div>
+                <div class="blog-card-body">
+                  <div class="blog-meta">
+                    <span><i class="fas fa-tag"></i> {{ t.blog_6_tag }}</span>
+                    <span><i class="far fa-calendar-alt"></i> 14 Jul 2026</span>
+                  </div>
+                  <h3 class="blog-card-title"><a href="{% url 'blog' %}">{{ t.blog_6_title }}</a></h3>
+                  <p class="blog-card-desc">{{ t.blog_6_desc }}</p>
+                  <div class="blog-card-footer">
+                    <a href="{% url 'blog' %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> 8 {{ t.blog_min_read }}</span>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+              <a href="#" class="page-btn active">1</a>
+              <a href="#" class="page-btn">2</a>
+              <a href="#" class="page-btn">3</a>
+              <a href="#" class="page-btn"><i class="fas fa-chevron-right"></i></a>
+            </div>
+          </div>
+
+          <!-- Sidebar Column -->
+          <div>
+            <!-- Search Widget -->
+            <div class="sidebar-widget reveal">
+              <h4 class="widget-title">{{ t.blog_sidebar_search }}</h4>
+              <div style="position: relative;">
+                <input type="text" class="form-input" placeholder="{{ t.blog_sidebar_search_placeholder }}">
+                <button style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; color: var(--primary); font-size: 1.1rem; border: none; cursor: pointer;">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Categories Widget -->
+            <div class="sidebar-widget reveal">
+              <h4 class="widget-title">{{ t.blog_sidebar_categories }}</h4>
+              <ul class="category-list">
+                <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_1 }}</span> <span>(14)</span></a></li>
+                <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_2 }}</span> <span>(8)</span></a></li>
+                <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_3 }}</span> <span>(11)</span></a></li>
+                <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_4 }}</span> <span>(6)</span></a></li>
+                <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_5 }}</span> <span>(9)</span></a></li>
+              </ul>
+            </div>
+
+            <!-- Recent Posts Widget -->
+            <div class="sidebar-widget reveal">
+              <h4 class="widget-title">{{ t.blog_sidebar_recent }}</h4>
+              
+              <div class="recent-post-item">
+                <div class="recent-post-thumb">
+                  <img src="https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=150&q=80" alt="Cappadocia">
+                </div>
+                <div>
+                  <h5 class="recent-post-title"><a href="{% url 'blog' %}">{{ t.blog_1_title|truncatewords:6 }}</a></h5>
+                  <span class="recent-post-date"><i class="far fa-calendar-alt"></i> 18 Aug 2026</span>
+                </div>
+              </div>
+
+              <div class="recent-post-item">
+                <div class="recent-post-thumb">
+                  <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=150&q=80" alt="Visa">
+                </div>
+                <div>
+                  <h5 class="recent-post-title"><a href="{% url 'blog' %}">{{ t.blog_2_title|truncatewords:6 }}</a></h5>
+                  <span class="recent-post-date"><i class="far fa-calendar-alt"></i> 12 Aug 2026</span>
+                </div>
+              </div>
+
+              <div class="recent-post-item">
+                <div class="recent-post-thumb">
+                  <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=150&q=80" alt="Bali">
+                </div>
+                <div>
+                  <h5 class="recent-post-title"><a href="{% url 'blog' %}">{{ t.blog_3_title|truncatewords:6 }}</a></h5>
+                  <span class="recent-post-date"><i class="far fa-calendar-alt"></i> 05 Aug 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Promo Sidebar Banner -->
+            <div class="sidebar-widget reveal" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #ffffff; text-align: center; padding: 2.5rem 1.5rem;">
+              <i class="fas fa-gift" style="font-size: 2.5rem; color: var(--gold); margin-bottom: 1rem;"></i>
+              <h4 style="color: #ffffff; font-size: 1.3rem; margin-bottom: 0.75rem;">{{ t.blog_promo_title }}</h4>
+              <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 1.5rem;">{{ t.blog_promo_desc }}</p>
+              <a href="{% url 'contact' %}" class="btn btn-accent btn-sm" style="width: 100%;">{{ t.blog_promo_btn }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

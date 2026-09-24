@@ -1,0 +1,289 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="{{ CURRENT_LANG|default:'az' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ t.site_title|default:'Travelistic - Səyahət və Turizm Agentliyi' }}{% endblock %}</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/logo.svg' %}">
+
+  {% block extra_css %}
+  {% endblock %}
+</head>
+<body>
+
+  <!-- Top Info Bar -->
+  <div class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-info">
+        <a href="tel:+994125557788"><i class="fas fa-phone-alt"></i> {{ t.phone_label }}</a>
+        <a href="mailto:info@travelistic.az"><i class="fas fa-envelope"></i> {{ t.email_label }}</a>
+        <span><i class="fas fa-map-marker-alt"></i> {{ t.address_label }}</span>
+      </div>
+      <div class="top-bar-right">
+        <div class="top-bar-social">
+          <span>{{ t.follow_us }}</span>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="https://t.me" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+          <a href="https://wa.me/994501234567" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+
+        <!-- Topbar Language Switcher -->
+        <div class="lang-switcher lang-switcher-topbar">
+          <button class="lang-btn" type="button" aria-expanded="false" aria-label="{{ t.select_language }}">
+            <span class="lang-flag">{{ CURRENT_LANG_FLAG }}</span>
+            <span class="lang-code">{{ CURRENT_LANG_SHORT }}</span>
+            <i class="fas fa-chevron-down lang-chevron"></i>
+          </button>
+          <div class="lang-dropdown-menu">
+            {% for lang_item in AVAILABLE_LANGUAGES %}
+            <a href="{% url 'set_language' lang_item.code %}?next={{ current_path|urlencode }}" class="lang-option {% if lang_item.code == CURRENT_LANG %}active{% endif %}">
+              <span class="lang-option-flag">{{ lang_item.flag }}</span>
+              <span class="lang-option-name">{{ lang_item.name }}</span>
+              {% if lang_item.code == CURRENT_LANG %}<i class="fas fa-check lang-check"></i>{% endif %}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Header -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="{% url 'home' %}" class="logo">
+        <div class="logo-icon">
+          <i class="fas fa-compass"></i>
+        </div>
+        <span>Travel</span>istic
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li class="nav-item"><a href="{% url 'home' %}" class="nav-link">{{ t.nav_home }}</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="{% url 'services' %}" class="nav-link">{{ t.nav_services }} <i class="fas fa-chevron-down" style="font-size: 0.75rem;"></i></a>
+            <div class="dropdown-menu">
+              <a href="{% url 'services' %}" class="dropdown-link"><i class="fas fa-globe-europe"></i> {{ t.nav_all_tours }}</a>
+              <a href="{% url 'services' %}?category=europe" class="dropdown-link"><i class="fas fa-mountain"></i> {{ t.nav_europe }}</a>
+              <a href="{% url 'services' %}?category=beach" class="dropdown-link"><i class="fas fa-umbrella-beach"></i> {{ t.nav_beach }}</a>
+              <a href="{% url 'services' %}?category=cultural" class="dropdown-link"><i class="fas fa-landmark"></i> {{ t.nav_cultural }}</a>
+            </div>
+          </li>
+          <li class="nav-item"><a href="{% url 'about' %}" class="nav-link">{{ t.nav_about }}</a></li>
+          <li class="nav-item"><a href="{% url 'blog' %}" class="nav-link">{{ t.nav_blog }}</a></li>
+          <li class="nav-item"><a href="{% url 'contact' %}" class="nav-link">{{ t.nav_contact }}</a></li>
+
+          <!-- Mobile Language Switcher Item -->
+          <li class="nav-item mobile-lang-item">
+            <div class="mobile-lang-title"><i class="fas fa-globe"></i> {{ t.select_language }}</div>
+            <div class="mobile-lang-options">
+              {% for lang_item in AVAILABLE_LANGUAGES %}
+              <a href="{% url 'set_language' lang_item.code %}?next={{ current_path|urlencode }}" class="mobile-lang-btn {% if lang_item.code == CURRENT_LANG %}active{% endif %}">
+                <span>{{ lang_item.flag }}</span> {{ lang_item.short }}
+              </a>
+              {% endfor %}
+            </div>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Header Language Switcher (Desktop) -->
+        <div class="lang-switcher lang-switcher-header">
+          <button class="lang-btn" type="button" aria-expanded="false" aria-label="{{ t.select_language }}">
+            <span class="lang-flag">{{ CURRENT_LANG_FLAG }}</span>
+            <span class="lang-code">{{ CURRENT_LANG_SHORT }}</span>
+            <i class="fas fa-chevron-down lang-chevron"></i>
+          </button>
+          <div class="lang-dropdown-menu">
+            {% for lang_item in AVAILABLE_LANGUAGES %}
+            <a href="{% url 'set_language' lang_item.code %}?next={{ current_path|urlencode }}" class="lang-option {% if lang_item.code == CURRENT_LANG %}active{% endif %}">
+              <span class="lang-option-flag">{{ lang_item.flag }}</span>
+              <span class="lang-option-name">{{ lang_item.name }}</span>
+              {% if lang_item.code == CURRENT_LANG %}<i class="fas fa-check lang-check"></i>{% endif %}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+
+        <a href="#tours" class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ t.modal_default_tour }}">
+          <i class="fas fa-paper-plane"></i> {{ t.nav_book_now }}
+        </a>
+        <button class="hamburger" aria-label="{{ t.open_menu }}">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Content -->
+  {% block content %}
+  {% endblock %}
+
+  <!-- Global Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="{% url 'home' %}" class="logo footer-logo">
+            <div class="logo-icon">
+              <i class="fas fa-compass"></i>
+            </div>
+            <span>Travel</span>istic
+          </a>
+          <p class="footer-desc">
+            {{ t.footer_desc }}
+          </p>
+          <div class="footer-social-links">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://t.me" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://wa.me/994501234567" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-title">{{ t.footer_quick_links }}</h4>
+          <ul class="footer-links">
+            <li><a href="{% url 'home' %}"><i class="fas fa-chevron-right"></i> {{ t.nav_home }}</a></li>
+            <li><a href="{% url 'about' %}"><i class="fas fa-chevron-right"></i> {{ t.nav_about }}</a></li>
+            <li><a href="{% url 'services' %}"><i class="fas fa-chevron-right"></i> {{ t.nav_services }}</a></li>
+            <li><a href="{% url 'blog' %}"><i class="fas fa-chevron-right"></i> {{ t.nav_blog }}</a></li>
+            <li><a href="{% url 'contact' %}"><i class="fas fa-chevron-right"></i> {{ t.nav_contact }}</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">{{ t.footer_services }}</h4>
+          <ul class="footer-links">
+            <li><a href="{% url 'services' %}?category=group"><i class="fas fa-chevron-right"></i> {{ t.footer_srv_group }}</a></li>
+            <li><a href="{% url 'services' %}?category=vip"><i class="fas fa-chevron-right"></i> {{ t.footer_srv_vip }}</a></li>
+            <li><a href="{% url 'services' %}?category=visa"><i class="fas fa-chevron-right"></i> {{ t.footer_srv_visa }}</a></li>
+            <li><a href="{% url 'services' %}?category=flight"><i class="fas fa-chevron-right"></i> {{ t.footer_srv_flight }}</a></li>
+            <li><a href="{% url 'services' %}?category=corporate"><i class="fas fa-chevron-right"></i> {{ t.footer_srv_corporate }}</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-title">{{ t.footer_contact_info }}</h4>
+          <div class="footer-contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>{{ t.address_label }}</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-phone-alt"></i>
+            <span>{{ t.phone_label }}</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-envelope"></i>
+            <span>{{ t.email_label }}</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-clock"></i>
+            <span>{{ t.footer_hours }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Travelistic Tourism Agency. {{ t.rights_reserved }}</p>
+        <p>{{ t.designed_with }}</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Booking Modal Component -->
+  <div class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-plane-departure"></i> {{ t.modal_title }}</h3>
+        <button class="modal-close-btn" aria-label="{{ t.modal_close }}"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          {{ t.modal_selected_tour }} <strong id="modal-tour-name" style="color: var(--primary);">{{ t.modal_default_tour }}</strong>
+        </p>
+        <form id="modal-booking-form" class="booking-form">
+          <div class="form-group">
+            <label>{{ t.modal_name }}</label>
+            <input type="text" name="name" class="form-control" placeholder="{{ t.modal_name_placeholder }}" required>
+          </div>
+          <div class="form-group">
+            <label>{{ t.modal_phone }}</label>
+            <input type="tel" name="phone" class="form-control" placeholder="{{ t.modal_phone_placeholder }}" required>
+          </div>
+          <div class="form-group">
+            <label>{{ t.modal_email }}</label>
+            <input type="email" name="email" class="form-control" placeholder="{{ t.modal_email_placeholder }}" required>
+          </div>
+          <div class="form-group">
+            <label>{{ t.modal_date }}</label>
+            <input type="date" name="travel_date" class="form-control" value="2026-09-20">
+          </div>
+          <div class="form-group">
+            <label>{{ t.modal_guests }}</label>
+            <select name="guests" class="form-control">
+              <option value="1">{{ t.modal_guests_1 }}</option>
+              <option value="2" selected>{{ t.modal_guests_2 }}</option>
+              <option value="3">{{ t.modal_guests_3 }}</option>
+              <option value="4+">{{ t.modal_guests_4 }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>{{ t.modal_notes }}</label>
+            <textarea name="notes" class="form-control" rows="3" placeholder="{{ t.modal_notes_placeholder }}"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+            <i class="fas fa-check-circle"></i> {{ t.modal_submit }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" aria-label="Top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- Inline I18N Strings for JavaScript -->
+  <script>
+    window.I18N_STRINGS = {
+      lang: "{{ CURRENT_LANG|default:'az' }}",
+      booking_success: "{{ t.js_booking_success|escapejs }}",
+      contact_success: "{{ t.js_contact_success|escapejs }}",
+      newsletter_success: "{{ t.js_newsletter_success|escapejs }}",
+      newsletter_invalid: "{{ t.js_newsletter_invalid|escapejs }}",
+      comment_success: "{{ t.js_comment_success|escapejs }}",
+      link_copied: "{{ t.js_link_copied|escapejs }}",
+      link_copy_failed: "{{ t.js_link_copy_failed|escapejs }}",
+      search_searching: "{{ t.js_search_searching|escapejs }}",
+      search_flight_mode: "{{ t.js_search_flight_mode|escapejs }}",
+      search_hotel_mode: "{{ t.js_search_hotel_mode|escapejs }}",
+      search_tour_mode: "{{ t.js_search_tour_mode|escapejs }}",
+      suffix_countries: "{{ t.stats_suffix_countries|escapejs }}",
+      suffix_years: "{{ t.stats_suffix_years|escapejs }}"
+    };
+  </script>
+
+  <!-- Main JavaScript File -->
+  <script src="{% static 'js/script.js' %}"></script>
+
+  {% block extra_js %}
+  {% endblock %}
+</body>
+</html>

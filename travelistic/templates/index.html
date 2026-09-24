@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n_extras %}
+
+{% block title %}{{ t.site_title }} | {{ t.site_tagline }}{% endblock %}
+
+{% block content %}
+<main>
+    <!-- Hero -->
+    <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');">
+      <div class="hero-overlay"></div>
+      <div class="hero-shapes"></div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <i class="fas fa-crown"></i> {{ t.hero_badge }}
+          </div>
+          <h1 class="hero-title">
+            {{ t.hero_title_p1 }} <span>{{ t.hero_title_p2 }}</span>
+          </h1>
+          <p class="hero-desc">
+            {{ t.hero_desc }}
+          </p>
+
+          <div class="hero-actions reveal">
+            <a href="{% url 'services' %}" class="btn btn-accent btn-lg">
+              <i class="fas fa-compass"></i> {{ t.hero_btn_explore }}
+            </a>
+            <a href="{% url 'contact' %}" class="btn btn-outline-white btn-lg">
+              <i class="fas fa-headset"></i> {{ t.hero_btn_contact }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Xidmətlər / Kateqoriyalar / Üstünlüklərimiz -->
+    <section class="section section-bg">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-subtitle"><i class="fas fa-gem"></i> {{ t.feat_subtitle }}</span>
+          <h2 class="section-title">{{ t.feat_title }}</h2>
+          <p class="section-desc">{{ t.feat_desc }}</p>
+        </div>
+
+        <div class="grid grid-4">
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas fa-passport"></i>
+            </div>
+            <h3 class="feature-title">{{ t.feat_visa_title }}</h3>
+            <p class="feature-desc">{{ t.feat_visa_desc }}</p>
+          </div>
+
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3 class="feature-title">{{ t.feat_support_title }}</h3>
+            <p class="feature-desc">{{ t.feat_support_desc }}</p>
+          </div>
+
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas fa-tags"></i>
+            </div>
+            <h3 class="feature-title">{{ t.feat_price_title }}</h3>
+            <p class="feature-desc">{{ t.feat_price_desc }}</p>
+          </div>
+
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3 class="feature-title">{{ t.feat_insurance_title }}</h3>
+            <p class="feature-desc">{{ t.feat_insurance_desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Turlar -->
+    <section class="section" id="tours">
+      <div class="container">
+        <div class="flex-between align-center" style="margin-bottom: 2.5rem;">
+          <div>
+            <span class="section-subtitle"><i class="fas fa-fire"></i> {{ t.tours_subtitle }}</span>
+            <h2 class="section-title" style="margin-bottom: 0.5rem;">{{ t.tours_title }}</h2>
+            <p class="section-desc">{{ t.tours_desc }}</p>
+          </div>
+          <a href="{% url 'services' %}" class="btn btn-outline" style="display: inline-flex;">
+            {{ t.tours_view_all }} <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="grid grid-3">
+          {% for tour in featured_tours %}
+          <div class="tour-card reveal">
+            <div class="tour-card-thumb">
+              <img src="{% if tour.main_image.url %}{{ tour.main_image.url }}{% elif tour.main_image %}{{ tour.main_image }}{% else %}https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80{% endif %}" alt="{{ tour.display_title|default:tour.title }}" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+              <div class="tour-card-badges">
+                {% if tour.is_featured %}
+                  <span class="badge badge-accent"><i class="fas fa-star"></i> {{ t.tour_featured }}</span>
+                {% endif %}
+                <span class="badge badge-glass">{{ tour.duration_days|default:'7' }} {{ t.tour_days }} / {{ tour.duration_nights|default:'6' }} {{ t.tour_nights }}</span>
+              </div>
+              <div class="tour-card-price-tag">
+                {{ tour.price }} AZN <span>{{ t.tour_per_person }}</span>
+              </div>
+            </div>
+            <div class="tour-card-body">
+              <div class="tour-meta">
+                <span>
+                  <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> 
+                  {{ tour.destination.name|default:tour.destination|default:'Europe' }}
+                </span>
+                <div class="tour-rating">
+                  <i class="fas fa-star"></i> {{ tour.rating|default:'4.9' }} ({{ tour.reviews_count|default:'45' }} {{ t.tour_reviews }})
+                </div>
+              </div>
+              <h3 class="tour-title">
+                <a href="{% if tour.slug %}{% url 'service_detail' tour.slug %}{% else %}{% url 'services' %}{% endif %}">{{ tour.display_title|default:tour.title }}</a>
+              </h3>
+              <p class="tour-desc">
+                {{ tour.display_short_description|default:tour.short_description|default:tour.description|truncatewords:20 }}
+              </p>
+              
+              <div class="tour-features">
+                <span class="tour-feature-item"><i class="fas fa-plane"></i> {{ t.tour_feat_flight }}</span>
+                <span class="tour-feature-item"><i class="fas fa-hotel"></i> {{ t.tour_feat_hotel }}</span>
+                <span class="tour-feature-item"><i class="fas fa-utensils"></i> {{ t.tour_feat_breakfast }}</span>
+                <span class="tour-feature-item"><i class="fas fa-user-shield"></i> {{ t.feat_insurance_title }}</span>
+              </div>
+
+              <div class="tour-card-footer">
+                <a href="{% if tour.slug %}{% url 'service_detail' tour.slug %}{% else %}{% url 'services' %}{% endif %}" class="btn btn-outline btn-sm">{{ t.tour_view_details }}</a>
+                <button class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ tour.display_title|default:tour.title }}">
+                  <i class="fas fa-calendar-check"></i> {{ t.tour_book_now }}
+                </button>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <!-- Fallback Card 1 -->
+          <div class="tour-card reveal">
+            <div class="tour-card-thumb">
+              <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80" alt="Alps" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+              <div class="tour-card-badges">
+                <span class="badge badge-accent"><i class="fas fa-star"></i> {{ t.tour_featured }}</span>
+                <span class="badge badge-glass">7 {{ t.tour_days }} / 6 {{ t.tour_nights }}</span>
+              </div>
+              <div class="tour-card-price-tag">
+                1,290 AZN <span>{{ t.tour_per_person }}</span>
+              </div>
+            </div>
+            <div class="tour-card-body">
+              <div class="tour-meta">
+                <span><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Sürix, Como</span>
+                <div class="tour-rating">
+                  <i class="fas fa-star"></i> 4.9 (128 {{ t.tour_reviews }})
+                </div>
+              </div>
+              <h3 class="tour-title"><a href="{% url 'services' %}">{{ t.tour_fallback_europe_title }}</a></h3>
+              <p class="tour-desc">{{ t.tour_fallback_europe_desc }}</p>
+              
+              <div class="tour-card-footer">
+                <a href="{% url 'services' %}" class="btn btn-outline btn-sm">{{ t.tour_view_details }}</a>
+                <button class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ t.tour_fallback_europe_title }}">
+                  <i class="fas fa-calendar-check"></i> {{ t.tour_book_now }}
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistika -->
+    <section class="section stats-section">
+      <div class="container">
+        <div class="grid grid-4">
+          <div class="stat-item reveal">
+            <i class="fas fa-users stat-icon"></i>
+            <div class="stat-number" data-target="8500" data-suffix="+">{{ t.stats_travelers_num }}</div>
+            <div class="stat-label">{{ t.stats_travelers_label }}</div>
+          </div>
+
+          <div class="stat-item reveal">
+            <i class="fas fa-globe-americas stat-icon"></i>
+            <div class="stat-number" data-target="54" data-suffix="{{ t.stats_suffix_countries }}">{{ t.stats_routes_num }}</div>
+            <div class="stat-label">{{ t.stats_routes_label }}</div>
+          </div>
+
+          <div class="stat-item reveal">
+            <i class="fas fa-award stat-icon"></i>
+            <div class="stat-number" data-target="12" data-suffix="{{ t.stats_suffix_years }}">{{ t.stats_years_num }}</div>
+            <div class="stat-label">{{ t.stats_years_label }}</div>
+          </div>
+
+          <div class="stat-item reveal">
+            <i class="fas fa-smile-beam stat-icon"></i>
+            <div class="stat-number" data-target="99" data-suffix="%">{{ t.stats_rating_num }}</div>
+            <div class="stat-label">{{ t.stats_rating_label }}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- İstiqamətlər -->
+    <section class="section section-bg">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-subtitle"><i class="fas fa-map-pin"></i> {{ t.dest_subtitle }}</span>
+          <h2 class="section-title">{{ t.dest_title }}</h2>
+          <p class="section-desc">{{ t.dest_desc }}</p>
+        </div>
+
+        <div class="grid grid-3">
+          {% for dest in destinations %}
+          <div class="destination-card reveal">
+            <img src="{% if dest.image.url %}{{ dest.image.url }}{% elif dest.image %}{{ dest.image }}{% else %}https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80{% endif %}" alt="{{ dest.display_name|default:dest.name }}" onerror="this.src='https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80';">
+            <div class="destination-overlay">
+              {% if dest.country_code %}
+                <span class="badge badge-accent" style="align-self: flex-start; margin-bottom: 0.5rem;">{{ dest.country_code }}</span>
+              {% endif %}
+              <h3 class="destination-title">{{ dest.display_name|default:dest.name }}</h3>
+              <span class="destination-tours-count"><i class="fas fa-route"></i> {{ dest.tours_count|default:'5' }} {{ t.dest_active_tours }}</span>
+            </div>
+          </div>
+          {% empty %}
+          <div class="destination-card reveal">
+            <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80" alt="Dubay" onerror="this.src='https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80';">
+            <div class="destination-overlay">
+              <span class="badge badge-accent" style="align-self: flex-start; margin-bottom: 0.5rem;">{{ t.dest_dubai_tag }}</span>
+              <h3 class="destination-title">{{ t.dest_dubai_title }}</h3>
+              <span class="destination-tours-count"><i class="fas fa-route"></i> 14 {{ t.dest_active_tours }}</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Rəylər / Testimonials -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-subtitle"><i class="fas fa-comments"></i> {{ t.test_subtitle }}</span>
+          <h2 class="section-title">{{ t.test_title }}</h2>
+          <p class="section-desc">{{ t.test_desc }}</p>
+        </div>
+
+        <div class="grid grid-3">
+          {% for testimonial in testimonials %}
+          <div class="testimonial-card reveal">
+            <div class="testimonial-quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="testimonial-stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p class="testimonial-text">
+              "{{ testimonial.text }}"
+            </p>
+            <div class="testimonial-author">
+              <img src="{% if testimonial.avatar.url %}{{ testimonial.avatar.url }}{% elif testimonial.avatar %}{{ testimonial.avatar }}{% else %}https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80{% endif %}" alt="{{ testimonial.author_name }}" class="testimonial-author-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80';">
+              <div>
+                <h4 class="testimonial-author-name">{{ testimonial.author_name }}</h4>
+                <p class="testimonial-author-role"><i class="fas fa-check-circle" style="color: #10b981;"></i> {{ testimonial.role|default:t.test_verified }}</p>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="testimonial-card reveal">
+            <div class="testimonial-quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="testimonial-stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p class="testimonial-text">
+              "{{ t.test_1_quote }}"
+            </p>
+            <div class="testimonial-author">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="{{ t.test_1_name }}" class="testimonial-author-avatar">
+              <div>
+                <h4 class="testimonial-author-name">{{ t.test_1_name }}</h4>
+                <p class="testimonial-author-role"><i class="fas fa-check-circle" style="color: #10b981;"></i> {{ t.test_verified }}</p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Bloq -->
+    <section class="section section-bg">
+      <div class="container">
+        <div class="flex-between align-center" style="margin-bottom: 2.5rem;">
+          <div>
+            <span class="section-subtitle"><i class="fas fa-book-open"></i> {{ t.blog_badge }}</span>
+            <h2 class="section-title" style="margin-bottom: 0.5rem;">{{ t.blog_title }}</h2>
+            <p class="section-desc">{{ t.blog_desc }}</p>
+          </div>
+          <a href="{% url 'blog' %}" class="btn btn-outline">{{ t.blog_badge }} <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="grid grid-3">
+          {% for post in latest_blogs %}
+          <div class="blog-card reveal">
+            <div class="blog-card-thumb">
+              <img src="{% if post.image.url %}{{ post.image.url }}{% elif post.image %}{{ post.image }}{% else %}https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80{% endif %}" alt="{{ post.title }}" onerror="this.src='https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80';">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span><i class="fas fa-tag"></i> {{ post.author }}</span>
+                <span><i class="far fa-calendar-alt"></i> {{ post.created_at|date:"d M Y" }}</span>
+              </div>
+              <h3 class="blog-card-title">
+                <a href="{% if post.slug %}{% url 'blog_detail' post.slug %}{% else %}{% url 'blog' %}{% endif %}">{{ post.title }}</a>
+              </h3>
+              <p class="blog-card-desc">
+                {{ post.short_summary|default:post.content|truncatewords:18 }}
+              </p>
+              <div class="blog-card-footer">
+                <a href="{% if post.slug %}{% url 'blog_detail' post.slug %}{% else %}{% url 'blog' %}{% endif %}" class="blog-read-more">{{ t.blog_read_more }} <i class="fas fa-arrow-right"></i></a>
+                <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> {{ post.reading_time|default:'5' }} {{ t.blog_min_read }}</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA / Newsletter Bölməsi -->
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner reveal">
+          <div style="max-width: 600px;">
+            <span class="badge badge-accent" style="margin-bottom: 1rem;"><i class="fas fa-gift"></i> {{ t.newsletter_badge }}</span>
+            <h2 style="font-size: 2.4rem; color: #ffffff; margin-bottom: 1rem;">{{ t.newsletter_title }}</h2>
+            <p style="color: rgba(255, 255, 255, 0.85); font-size: 1.05rem; line-height: 1.6;">
+              {{ t.newsletter_desc }}
+            </p>
+            <form class="newsletter-form">
+              <input type="email" class="newsletter-input" placeholder="{{ t.newsletter_placeholder }}" required>
+              <button type="submit" class="btn btn-accent">{{ t.newsletter_submit }} <i class="fas fa-arrow-right"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tur Paketləri və Xidmətlər - Travelistic | Xarici Turlar{% endblock %}
+
+{% block content %}
+<main>
+    <!-- Page Banner -->
+    <section class="page-banner" style="background-image: url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1920&q=80');">
+      <div class="page-banner-overlay"></div>
+      <div class="container">
+        <h1 class="page-banner-title">Səyahət Paketləri və Xidmətlər</h1>
+        <div class="breadcrumbs">
+          <a href="index.html">Ana Səhifə</a>
+          <i class="fas fa-chevron-right"></i>
+          <span>Bütün Tur Paketləri</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filterable Tour Packages Grid -->
+    <section class="section" id="packages-grid">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-subtitle"><i class="fas fa-suitcase-rolling"></i> Təkliflərimiz</span>
+          <h2 class="section-title">Dünyanın Dörd Bir Yanına Turlar</h2>
+          <p class="section-desc">Bütün paketlərimizə uçuş, 4-5* oteldə gecələmə, səhər yeməyi, peşəkar bələdçi və transfer xidməti daxildir.</p>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="flex-center" style="margin-bottom: 3rem; flex-wrap: wrap; gap: 0.6rem;">
+          <button class="btn btn-sm btn-primary filter-btn active" data-filter="all">Hamısı</button>
+          <button class="btn btn-sm btn-outline filter-btn" data-filter="europe">Avropa Turları</button>
+          <button class="btn btn-sm btn-outline filter-btn" data-filter="beach">Tropik & Çimərlik</button>
+          <button class="btn btn-sm btn-outline filter-btn" data-filter="cultural">Mədəniyyət & Tarix</button>
+          <button class="btn btn-sm btn-outline filter-btn" data-filter="honeymoon">Bal Ayı Xüsusi</button>
+        </div>
+
+        <!-- Tour Cards Grid -->
+        <div class="grid grid-3">
+          {% for tour in featured_tours %}
+          <div class="tour-card filterable-item reveal" data-category="all">
+            <div class="tour-card-thumb">
+              <img src="{{ tour.main_image }}" alt="{{ tour.title }}" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+              <div class="tour-card-badges">
+                {% if tour.is_featured %}
+                  <span class="badge badge-accent"><i class="fas fa-star"></i> Seçilmiş</span>
+                {% endif %}
+                <span class="badge badge-glass">{{ tour.duration_days }} Gün / {{ tour.duration_nights }} Gecə</span>
+              </div>
+              <div class="tour-card-price-tag">
+                {{ tour.price }} AZN <span>/ nəfər</span>
+              </div>
+            </div>
+            <div class="tour-card-body">
+              <div class="tour-meta">
+                <span>
+                  <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> 
+                  {{ tour.destination.name }}
+                </span>
+                <div class="tour-rating">
+                  <i class="fas fa-star"></i> {{ tour.rating }} ({{ tour.reviews_count }})
+                </div>
+              </div>
+              <h3 class="tour-title">
+                <a href="service-single.html">{{ tour.title }}</a>
+              </h3>
+              <p class="tour-desc">{{ tour.short_description }}</p>
+              
+              <div class="tour-features">
+                <span class="tour-feature-item"><i class="fas fa-plane"></i> Uçuş Daxil</span>
+                <span class="tour-feature-item"><i class="fas fa-hotel"></i> 4* Otel</span>
+                <span class="tour-feature-item"><i class="fas fa-utensils"></i> Səhər Yeməyi</span>
+                <span class="tour-feature-item"><i class="fas fa-bus"></i> VIP Transfer</span>
+              </div>
+
+              <div class="tour-card-footer">
+                <a href="service-single.html" class="btn btn-outline btn-sm">Ətraflı Bax</a>
+                <button class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ tour.title }}">
+                  <i class="fas fa-calendar-check"></i> Bron Et
+                </button>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="tour-card filterable-item reveal" data-category="europe">
+            <div class="tour-card-thumb">
+              <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80" alt="İsveçrə Alpları" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+              <div class="tour-card-badges">
+                <span class="badge badge-accent"><i class="fas fa-star"></i> Top Seçim</span>
+                <span class="badge badge-glass">7 Gün / 6 Gecə</span>
+              </div>
+              <div class="tour-card-price-tag">
+                1,290 AZN <span>/ nəfər</span>
+              </div>
+            </div>
+            <div class="tour-card-body">
+              <div class="tour-meta">
+                <span><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Sürix, Como</span>
+                <div class="tour-rating">
+                  <i class="fas fa-star"></i> 4.9 (128)
+                </div>
+              </div>
+              <h3 class="tour-title"><a href="service-single.html">İsveçrə Alpları & İtaliya Gölləri Nağılı</a></h3>
+              <p class="tour-desc">Alp dağlarının füsunkar mənzərəsi, büllur kimi təmiz dağ gölləri və panoramik qatarlar.</p>
+              
+              <div class="tour-features">
+                <span class="tour-feature-item"><i class="fas fa-plane"></i> THY Uçuşu</span>
+                <span class="tour-feature-item"><i class="fas fa-hotel"></i> 4* Otellər</span>
+                <span class="tour-feature-item"><i class="fas fa-utensils"></i> Səhər Yeməyi</span>
+                <span class="tour-feature-item"><i class="fas fa-bus"></i> VIP Transfer</span>
+              </div>
+
+              <div class="tour-card-footer">
+                <a href="service-single.html" class="btn btn-outline btn-sm">Ətraflı Bax</a>
+                <button class="btn btn-primary btn-sm open-booking-modal" data-tour="İsveçrə Alpları">
+                  <i class="fas fa-calendar-check"></i> Bron Et
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Frequently Asked Questions (FAQ) Accordion -->
+    <section class="section section-bg">
+      <div class="container" style="max-width: 860px;">
+        <div class="section-header reveal">
+          <span class="section-subtitle"><i class="fas fa-question-circle"></i> FAQ</span>
+          <h2 class="section-title">Tez-tez Verilən Suallar</h2>
+          <p class="section-desc">Tur rezervasiyası, ödənişlər və viza prosesləri ilə bağlı ən çox soruşulan sualların cavabları.</p>
+        </div>
+
+        <div class="itinerary-timeline" style="padding-left: 0;">
+          <!-- FAQ 1 -->
+          <div class="itinerary-item active reveal">
+            <div class="itinerary-header">
+              <span class="itinerary-day">
+                <i class="fas fa-passport" style="color: var(--primary);"></i> Viza müraciəti üçün hansı sənədlər tələb olunur?
+              </span>
+              <i class="fas fa-chevron-down itinerary-toggle-icon"></i>
+            </div>
+            <div class="itinerary-body">
+              Əsas sənədlər: xarici pasport (etibarlılıq müddəti ən azı 6 ay), iş yerindən arayış (və ya VÖEN), son 6 aylıq bank çıxarışı və 2 ədəd biometrik fotoşəkil. Bütün tərcümə, sığorta və anket doldurulması işlərini viza menecerimiz sizin üçün həyata keçirir.
+            </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="itinerary-item reveal">
+            <div class="itinerary-header">
+              <span class="itinerary-day">
+                <i class="fas fa-credit-card" style="color: var(--primary);"></i> Turları hissə-hissə (kredit/taksit) ödəmək mümkündürmü?
+              </span>
+              <i class="fas fa-chevron-down itinerary-toggle-icon"></i>
+            </div>
+            <div class="itinerary-body">
+              Bəli! BirBank, TamKart və BolKart taksit kartları ilə turların məbləğini 2, 3, 6 və ya 12 aya faizsiz bölərək hissə-hissə ödəyə bilərsiniz. Həmçinin 30% ilkin ödəniş edərək rezervasiya edib, qalan məbləği uçuşa 10 gün qalmış tamamlamaq mümkündür.
+            </div>
+          </div>
+
+          <!-- FAQ 3 -->
+          <div class="itinerary-item reveal">
+            <div class="itinerary-header">
+              <span class="itinerary-day">
+                <i class="fas fa-undo-alt" style="color: var(--primary);"></i> Turu ləğv etmək və ya tarixi dəyişmək mümkündürmü?
+              </span>
+              <i class="fas fa-chevron-down itinerary-toggle-icon"></i>
+            </div>
+            <div class="itinerary-body">
+              Uçuş tarixinə 21 gündən çox qaldıqda ləğv etmə zamanı cəriməsiz ödəniş tam və ya müvafiq aviaşirkət qaydalarına uyğun olaraq geri qaytarılır. Əlavə olaraq səyahət sığortamız ləğvolunma risklərini də qarşılayır.
+            </div>
+          </div>
+
+          <!-- FAQ 4 -->
+          <div class="itinerary-item reveal">
+            <div class="itinerary-header">
+              <span class="itinerary-day">
+                <i class="fas fa-user-shield" style="color: var(--primary);"></i> Fərdi (özəl) tur marşrutu sifariş edə bilərəmmi?
+              </span>
+              <i class="fas fa-chevron-down itinerary-toggle-icon"></i>
+            </div>
+            <div class="itinerary-body">
+              Əlbəttə! İstənilən ölkə, şəhər və otel seçimi ilə sizə tam fərdiləşdirilmiş VIP səyahət planı hazırlaya bilərik. Bunun üçün əlaqə bölməsindən sorğu göndərməyiniz kifayətdir.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Banner -->
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner reveal" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+          <h2 style="font-size: 2.4rem; color: #ffffff; margin-bottom: 1rem;">Axtardığınız Turu Tapmadınız?</h2>
+          <p style="color: rgba(255, 255, 255, 0.88); max-width: 600px; margin-bottom: 2rem; font-size: 1.05rem;">
+            Büdcənizə və istirahət tərzinizə uyğun tam fərdi tur proqramını 15 dəqiqə ərzində pulsuz tərtib edək.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+            <a href="contact.html" class="btn btn-accent btn-lg"><i class="fas fa-headset"></i> Fərdi Təklif İstə</a>
+            <a href="tel:+994125557788" class="btn btn-outline-white btn-lg"><i class="fas fa-phone-alt"></i> +994 12 555-77-88</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+{% endblock %}

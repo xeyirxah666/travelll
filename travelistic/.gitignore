@@ -1,0 +1,38 @@
+# Virtual Environment (Virtual mühit)
+venv/
+env/
+ENV/
+.env/
+
+# Python byte code & keş faylları
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django verilənlər bazası (Local Database)
+*.sqlite3
+db.sqlite3
+
+# Məxfi sazlamalar və mühit dəyişənləri
+.env
+.env.*
+!.env.example
+
+# İstifadəçi faylları və toplanmış statik fayllar
+media/
+staticfiles/
+
+# Redaktor və IDE faylları
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Əməliyyat sistemi müvəqqəti faylları
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Log faylları
+*.log

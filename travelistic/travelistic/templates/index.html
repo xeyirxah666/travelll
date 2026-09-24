@@ -1,0 +1,407 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Travelistic - Ana Səhifə{% endblock %}
+
+{% block content %}
+<main>
+    <!-- Hero -->
+    <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');">
+      <div class="hero-overlay"></div>
+      <div class="hero-shapes"></div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            <i class="fas fa-crown"></i> 2026-cı İlin Ən Etibarlı Səyahət Agentliyi
+          </div>
+          <h1 class="hero-title">
+            Dünyanın Ən Gözəl Guşələrini <span>Bizimlə Kəşf Edin</span>
+          </h1>
+          <p class="hero-desc">
+            Xəyal etdiyiniz tətil artıq əlçatandır. Peşəkar bələdçilər, premium otellər, zəmanətli viza dəstəyi və fərdiləşdirilmiş marşrutlarla unudulmaz xatirələr toplayın.
+          </p>
+
+          <div class="hero-actions reveal">
+            <a href="services.html" class="btn btn-accent btn-lg">
+              <i class="fas fa-compass"></i> Turları Kəşf Edin
+            </a>
+            <a href="contact.html" class="btn btn-outline-white btn-lg">
+              <i class="fas fa-headset"></i> Bizimlə Əlaqə
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Xidmətlər -->
+    <section class="section section-bg">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-subtitle"><i class="fas fa-gem"></i> Üstünlüklərimiz</span>
+          <h2 class="section-title">Niyə Məhz Travelistic?</h2>
+          <p class="section-desc">10 ildən artıqdır ki, minlərlə müştərimizə stressiz, təhlükəsiz və lüks səyahət təcrübəsi təqdim edirik.</p>
+        </div>
+
+        <div class="grid grid-4">
+          {% for cat in categories %}
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas {{ cat.icon_class }}"></i>
+            </div>
+            <h3 class="feature-title">{{ cat.name }}</h3>
+            <p class="feature-desc">{{ cat.tours_count }} aktiv tur paketi ilə ən sərfəli səyahət fürsətləri.</p>
+          </div>
+          {% empty %}
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas fa-passport"></i>
+            </div>
+            <h3 class="feature-title">99% Viza Uğuru</h3>
+            <p class="feature-desc">Şengen, Böyük Britaniya, ABŞ və digər ölkələr üzrə sənədləşmə işlərini peşəkar viza komandamız tam həyata keçirir.</p>
+          </div>
+
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas fa-headset"></i>
+            </div>
+            <h3 class="feature-title">24/7 Canlı Dəstək</h3>
+            <p class="feature-desc">Səyahətiniz boyu günün istənilən saatında şəxsi tur meneceriniz və bələdçiniz bir zəng qədər yaxınınızdadır.</p>
+          </div>
+
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas fa-tags"></i>
+            </div>
+            <h3 class="feature-title">Şəffaf & Ən Yaxşı Qiymət</h3>
+            <p class="feature-desc">Heç bir gizli komissiya yoxdur. Birbaşa partnyor otellər və aviaşirkətlər vasitəsilə ən sərfəli tariflər təmin edilir.</p>
+          </div>
+
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3 class="feature-title">Tam Sığortalanmış Tətil</h3>
+            <p class="feature-desc">Beynəlxalq tibbi və baqaj sığortası hər bir səyahət paketimizə daxil edilərək təhlükəsizliyinizi qoruyur.</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Turlar -->
+    <section class="section" id="tours">
+      <div class="container">
+        <div class="flex-between align-center" style="margin-bottom: 2.5rem;">
+          <div>
+            <span class="section-subtitle"><i class="fas fa-fire"></i> Populyar Turlar</span>
+            <h2 class="section-title" style="margin-bottom: 0.5rem;">Ən Çox Tələb Olunan Paketlər</h2>
+            <p class="section-desc">Hər zövqə və büdcəyə uyğun xüsusi seçilmiş premium marşrutlar.</p>
+          </div>
+          <a href="services.html" class="btn btn-outline" style="display: inline-flex;">
+            Bütün Turlara Bax <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+
+        <div class="grid grid-3">
+          {% for tour in featured_tours %}
+          <div class="tour-card reveal">
+            <div class="tour-card-thumb">
+              <img src="{{ tour.main_image }}" alt="{{ tour.title }}" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+              <div class="tour-card-badges">
+                {% if tour.is_featured %}
+                  <span class="badge badge-accent"><i class="fas fa-star"></i> Seçilmiş</span>
+                {% endif %}
+                <span class="badge badge-glass">{{ tour.duration_days }} Gün / {{ tour.duration_nights }} Gecə</span>
+              </div>
+              <div class="tour-card-price-tag">
+                {{ tour.price }} AZN <span>/ nəfər</span>
+              </div>
+            </div>
+            <div class="tour-card-body">
+              <div class="tour-meta">
+                <span>
+                  <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> 
+                  {{ tour.destination.name }}
+                </span>
+                <div class="tour-rating">
+                  <i class="fas fa-star"></i> {{ tour.rating }} ({{ tour.reviews_count }} rəy)
+                </div>
+              </div>
+              <h3 class="tour-title">
+                <a href="service-single.html">{{ tour.title }}</a>
+              </h3>
+              <p class="tour-desc">
+                {{ tour.short_description }}
+              </p>
+              
+              <div class="tour-features">
+                <span class="tour-feature-item"><i class="fas fa-plane"></i> Komfort Uçuş</span>
+                <span class="tour-feature-item"><i class="fas fa-hotel"></i> Lüks Otellər</span>
+                <span class="tour-feature-item"><i class="fas fa-utensils"></i> Səhər Yeməyi</span>
+                <span class="tour-feature-item"><i class="fas fa-user-shield"></i> Sığorta</span>
+              </div>
+
+              <div class="tour-card-footer">
+                <a href="service-single.html" class="btn btn-outline btn-sm">Ətraflı Bax</a>
+                <button class="btn btn-primary btn-sm open-booking-modal" data-tour="{{ tour.title }}">
+                  <i class="fas fa-calendar-check"></i> Bron Et
+                </button>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="tour-card reveal">
+            <div class="tour-card-thumb">
+              <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80" alt="İsveçrə Alpları" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';">
+              <div class="tour-card-badges">
+                <span class="badge badge-accent"><i class="fas fa-star"></i> Top Seçim</span>
+                <span class="badge badge-glass">7 Gün / 6 Gecə</span>
+              </div>
+              <div class="tour-card-price-tag">
+                1,290 AZN <span>/ nəfər</span>
+              </div>
+            </div>
+            <div class="tour-card-body">
+              <div class="tour-meta">
+                <span><i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> Sürix, Como</span>
+                <div class="tour-rating">
+                  <i class="fas fa-star"></i> 4.9 (128 rəy)
+                </div>
+              </div>
+              <h3 class="tour-title"><a href="service-single.html">İsveçrə Alpları & İtaliya Gölləri Nağılı</a></h3>
+              <p class="tour-desc">Alp dağlarının füsunkar mənzərəsi, büllur kimi təmiz dağ gölləri və panoramik qatarlar.</p>
+              
+              <div class="tour-features">
+                <span class="tour-feature-item"><i class="fas fa-plane"></i> THY Uçuşu</span>
+                <span class="tour-feature-item"><i class="fas fa-hotel"></i> 4* Otellər</span>
+                <span class="tour-feature-item"><i class="fas fa-utensils"></i> Səhər Yeməyi</span>
+                <span class="tour-feature-item"><i class="fas fa-bus"></i> VIP Transfer</span>
+              </div>
+
+              <div class="tour-card-footer">
+                <a href="service-single.html" class="btn btn-outline btn-sm">Ətraflı Bax</a>
+                <button class="btn btn-primary btn-sm open-booking-modal" data-tour="İsveçrə Alpları">
+                  <i class="fas fa-calendar-check"></i> Bron Et
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Statistika -->
+    <section class="section stats-section">
+      <div class="container">
+        <div class="grid grid-4">
+          <div class="stat-item reveal">
+            <i class="fas fa-users stat-icon"></i>
+            <div class="stat-number" data-target="8500" data-suffix="+">{{ stats.travelers }}</div>
+            <div class="stat-label">Məmnun Müştəri</div>
+          </div>
+
+          <div class="stat-item reveal">
+            <i class="fas fa-globe-americas stat-icon"></i>
+            <div class="stat-number" data-target="54" data-suffix=" Ölkə">{{ stats.routes }}</div>
+            <div class="stat-label">Qlobal Marşrut</div>
+          </div>
+
+          <div class="stat-item reveal">
+            <i class="fas fa-award stat-icon"></i>
+            <div class="stat-number" data-target="12" data-suffix=" İl">{{ stats.years }}</div>
+            <div class="stat-label">Peşəkar Təcrübə</div>
+          </div>
+
+          <div class="stat-item reveal">
+            <i class="fas fa-smile-beam stat-icon"></i>
+            <div class="stat-number" data-target="99" data-suffix="%">{{ stats.rating }}</div>
+            <div class="stat-label">Müsbət Rəy Faizi</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- İstiqamətlər -->
+    <section class="section section-bg">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-subtitle"><i class="fas fa-map-pin"></i> İstiqamətlər</span>
+          <h2 class="section-title">Kəşf Ediləcək Top Şəhərlər</h2>
+          <p class="section-desc">Bu mövsümün ən populyar və vizasız / asan viza tələb edən əsas turizm mərkəzləri.</p>
+        </div>
+
+        <div class="grid grid-3">
+          {% for dest in destinations %}
+          <div class="destination-card reveal">
+            <img src="{{ dest.image }}" alt="{{ dest.name }}" onerror="this.src='https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80';">
+            <div class="destination-overlay">
+              {% if dest.country_code %}
+                <span class="badge badge-accent" style="align-self: flex-start; margin-bottom: 0.5rem;">{{ dest.country_code }}</span>
+              {% endif %}
+              <h3 class="destination-title">{{ dest.name }}</h3>
+              <span class="destination-tours-count"><i class="fas fa-route"></i> {{ dest.tours_count }} Aktiv Tur Paketi</span>
+            </div>
+          </div>
+          {% empty %}
+          <div class="destination-card reveal">
+            <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80" alt="Dubay" onerror="this.src='https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80';">
+            <div class="destination-overlay">
+              <span class="badge badge-accent" style="align-self: flex-start; margin-bottom: 0.5rem;">Vizasız</span>
+              <h3 class="destination-title">Dubay & Abu Dabi</h3>
+              <span class="destination-tours-count"><i class="fas fa-route"></i> 14 Aktiv Tur Paketi</span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Rəylər -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-subtitle"><i class="fas fa-comments"></i> Rəylər</span>
+          <h2 class="section-title">Səyahətçilərimiz Nə Deyir?</h2>
+          <p class="section-desc">Bizimlə dünyaya səyahət edən real müştərilərimizin səmimi təəssüratları.</p>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="testimonial-card reveal">
+            <div class="testimonial-quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="testimonial-stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p class="testimonial-text">
+              "İsveçrə və İtaliya turuna Travelistic ilə qoşulduq. Hər şey saat mexanizmi kimi dəqiq təşkil olunmuşdu. Otellərin yeri, bələdçimizin diqqəti mükəmməl idi!"
+            </p>
+            <div class="testimonial-author">
+              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Nərgiz Məmmədova" class="testimonial-author-avatar">
+              <div>
+                <h4 class="testimonial-author-name">Nərgiz Məmmədova</h4>
+                <p class="testimonial-author-role"><i class="fas fa-check-circle" style="color: #10b981;"></i> Təsdiqlənmiş Səyahətçi</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card reveal">
+            <div class="testimonial-quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="testimonial-stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p class="testimonial-text">
+              "Kapadokya balon turu xəyalımız idi. Viza və uçuş məsələlərində o qədər operativ kömək etdilər ki, heç bir narahatlıq çəkmədik. Təşəkkürlər Travelistic komandası!"
+            </p>
+            <div class="testimonial-author">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80" alt="Rəşad Əliyev" class="testimonial-author-avatar">
+              <div>
+                <h4 class="testimonial-author-name">Rəşad Əliyev</h4>
+                <p class="testimonial-author-role"><i class="fas fa-check-circle" style="color: #10b981;"></i> Təsdiqlənmiş Səyahətçi</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card reveal">
+            <div class="testimonial-quote-icon">
+              <i class="fas fa-quote-left"></i>
+            </div>
+            <div class="testimonial-stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <p class="testimonial-text">
+              "Bali bal ayı turumuz üçün ən gözəl villanı seçdilər. Şəxsi transferimiz və bələdçimiz həmişə yanımızda idi. Xidmət səviyyəsi həqiqətən 5 ulduzluqdur."
+            </p>
+            <div class="testimonial-author">
+              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=200&q=80" alt="Leyla Qasımova" class="testimonial-author-avatar">
+              <div>
+                <h4 class="testimonial-author-name">Leyla Qasımova</h4>
+                <p class="testimonial-author-role"><i class="fas fa-check-circle" style="color: #10b981;"></i> Bal Ayı Səyahətçisi</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bloq -->
+    <section class="section section-bg">
+      <div class="container">
+        <div class="flex-between align-center" style="margin-bottom: 2.5rem;">
+          <div>
+            <span class="section-subtitle"><i class="fas fa-book-open"></i> Bloq</span>
+            <h2 class="section-title" style="margin-bottom: 0.5rem;">Səyahət Bələdçisi & Məsləhətlər</h2>
+            <p class="section-desc">Dünyanı gəzərkən sizə faydalı olacaq ən son tövsiyələr və xəbərlər.</p>
+          </div>
+          <a href="blog.html" class="btn btn-outline">Bütün Yazılar <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="grid grid-3">
+          {% for post in latest_blogs %}
+          <div class="blog-card reveal">
+            <div class="blog-card-thumb">
+              <img src="{{ post.image }}" alt="{{ post.title }}" onerror="this.src='https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80';">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span><i class="fas fa-tag"></i> {{ post.author }}</span>
+                <span><i class="far fa-calendar-alt"></i> {{ post.created_at|date:"d M Y" }}</span>
+              </div>
+              <h3 class="blog-card-title">
+                <a href="blog-single.html">{{ post.title }}</a>
+              </h3>
+              <p class="blog-card-desc">
+                {{ post.short_summary }}
+              </p>
+              <div class="blog-card-footer">
+                <a href="blog-single.html" class="blog-read-more">Daha çox oxu <i class="fas fa-arrow-right"></i></a>
+                <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> {{ post.reading_time }} dəq</span>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <div class="blog-card reveal">
+            <div class="blog-card-thumb">
+              <img src="https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=800&q=80" alt="Kapadokya" onerror="this.src='https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=800&q=80';">
+            </div>
+            <div class="blog-card-body">
+              <div class="blog-meta">
+                <span><i class="fas fa-tag"></i> Bələdçi</span>
+                <span><i class="far fa-calendar-alt"></i> 18 Avqust 2026</span>
+              </div>
+              <h3 class="blog-card-title"><a href="blog-single.html">Kapadokyada Hava Şarı Turu</a></h3>
+              <p class="blog-card-desc">Kapadokyada gün doğumunu göylərdə qarşılamaq istəyənlər üçün ətraflı bələdçi.</p>
+              <div class="blog-card-footer">
+                <a href="blog-single.html" class="blog-read-more">Daha çox oxu <i class="fas fa-arrow-right"></i></a>
+                <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="far fa-clock"></i> 5 dəq</span>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="section" style="padding-bottom: 5.5rem;">
+      <div class="container">
+        <div class="cta-banner reveal">
+          <div style="max-width: 600px;">
+            <span class="badge badge-accent" style="margin-bottom: 1rem;"><i class="fas fa-gift"></i> Xüsusi Təklif</span>
+            <h2 style="font-size: 2.4rem; color: #ffffff; margin-bottom: 1rem;">Erkən Rezervasiya İlə 25%-dək Qənaət Edin!</h2>
+            <p style="color: rgba(255, 255, 255, 0.85); font-size: 1.05rem; line-height: 1.6;">
+              E-poçt ünvanınızı qeyd edin, həftəlik eksklüziv endirimlər və viza yenilikləri birbaşa ünvanınıza gəlsin.
+            </p>
+            <form class="newsletter-form">
+              <input type="email" class="newsletter-input" placeholder="E-poçt ünvanınızı daxil edin..." required>
+              <button type="submit" class="btn btn-accent">Abunə Ol <i class="fas fa-arrow-right"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+</main>
+{% endblock %}
