@@ -125,14 +125,36 @@ def about_view(request):
     return render(request, 'about.html', {'stats': stats})
 
 def blog_view(request):
+    from django.core.paginator import Paginator
+
     lang = _get_current_lang(request)
-    posts = list(BlogPost.objects.all().order_by('-created_at'))
-    for post in posts:
+    category_slug = request.GET.get('category')
+    posts_qs = BlogPost.objects.all().order_by('-created_at')
+    if category_slug:
+        posts_qs = posts_qs.filter(category__slug=category_slug)
+        
+    posts_list = list(posts_qs)
+    for post in posts_list:
         localize_blog_post(post, lang)
+
+    paginator = Paginator(posts_list, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     categories = list(Category.objects.all())
     for cat in categories:
-        cat.display_name = localize_category_name(cat.name, lang)
-    return render(request, 'blog.html', {'posts': posts, 'categories': categories})
+        cat.display_name = localize_category_name(cat, lang)
+
+    recent_posts = list(BlogPost.objects.order_by('-created_at')[:3])
+    for rp in recent_posts:
+        localize_blog_post(rp, lang)
+
+    return render(request, 'blog.html', {
+        'posts': page_obj,
+        'page_obj': page_obj,
+        'categories': categories,
+        'recent_posts': recent_posts,
+    })
 
 def blog_detail_view(request, slug=''):
     lang = _get_current_lang(request)
@@ -143,9 +165,13 @@ def blog_detail_view(request, slug=''):
         post = BlogPost.objects.first()
     if post:
         localize_blog_post(post, lang)
-    recent_posts = list(BlogPost.objects.exclude(id=post.id if post else 0)[:3])
+        recent_posts = list(BlogPost.objects.exclude(id=post.id)[:3])
+    else:
+        recent_posts = list(BlogPost.objects.all()[:3])
+
     for rp in recent_posts:
         localize_blog_post(rp, lang)
+
     return render(request, 'blog-single.html', {'post': post, 'recent_posts': recent_posts})
 
 def contact_view(request):

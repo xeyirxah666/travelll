@@ -32,7 +32,7 @@
                 </div>
                 <div class="blog-card-body">
                   <div class="blog-meta">
-                    <span><i class="fas fa-tag"></i> {{ post.author }}</span>
+                    <span><i class="fas fa-tag"></i> {{ post.category.name|default:'Səyahət' }}</span>
                     <span><i class="far fa-calendar-alt"></i> {{ post.created_at|date:"d M Y" }}</span>
                   </div>
                   <h3 class="blog-card-title">
@@ -165,12 +165,31 @@
             </div>
 
             <!-- Pagination -->
+            {% with page_data=page_obj|default:posts %}
+            {% if page_data.has_other_pages %}
             <div class="pagination">
-              <a href="#" class="page-btn active">1</a>
-              <a href="#" class="page-btn">2</a>
-              <a href="#" class="page-btn">3</a>
-              <a href="#" class="page-btn"><i class="fas fa-chevron-right"></i></a>
+              {% if page_data.has_previous %}
+              <a href="?page={{ page_data.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" class="page-btn">
+                <i class="fas fa-chevron-left"></i>
+              </a>
+              {% endif %}
+
+              {% for num in page_data.paginator.page_range %}
+                {% if page_data.number == num %}
+                <a href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" class="page-btn active">{{ num }}</a>
+                {% elif num > page_data.number|add:'-3' and num < page_data.number|add:'3' %}
+                <a href="?page={{ num }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" class="page-btn">{{ num }}</a>
+                {% endif %}
+              {% endfor %}
+
+              {% if page_data.has_next %}
+              <a href="?page={{ page_data.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" class="page-btn">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              {% endif %}
             </div>
+            {% endif %}
+            {% endwith %}
           </div>
 
           <!-- Sidebar Column -->
@@ -190,18 +209,37 @@
             <div class="sidebar-widget reveal">
               <h4 class="widget-title">{{ t.blog_sidebar_categories }}</h4>
               <ul class="category-list">
+                {% for cat in categories %}
+                <li>
+                  <a href="{% url 'blog' %}?category={{ cat.slug }}">
+                    <span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ cat.display_name|default:cat.name }}</span>
+                    <span>({{ cat.posts.count|default:'0' }})</span>
+                  </a>
+                </li>
+                {% empty %}
                 <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_1 }}</span> <span>(14)</span></a></li>
                 <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_2 }}</span> <span>(8)</span></a></li>
                 <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_3 }}</span> <span>(11)</span></a></li>
-                <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_4 }}</span> <span>(6)</span></a></li>
-                <li><a href="{% url 'blog' %}"><span><i class="fas fa-chevron-right" style="font-size: 0.75rem; color: var(--accent); margin-right: 0.4rem;"></i> {{ t.blog_sidebar_cat_5 }}</span> <span>(9)</span></a></li>
+                {% endfor %}
               </ul>
             </div>
 
             <!-- Recent Posts Widget -->
             <div class="sidebar-widget reveal">
               <h4 class="widget-title">{{ t.blog_sidebar_recent }}</h4>
-              
+              {% for rp in recent_posts %}
+              <div class="recent-post-item">
+                <div class="recent-post-thumb">
+                  <img src="{% if rp.image.url %}{{ rp.image.url }}{% elif rp.image %}{{ rp.image }}{% else %}https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=150&q=80{% endif %}" alt="{{ rp.display_title|default:rp.title }}" onerror="this.src='https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=150&q=80';">
+                </div>
+                <div>
+                  <h5 class="recent-post-title">
+                    <a href="{% if rp.slug %}{% url 'blog_detail' rp.slug %}{% else %}{% url 'blog' %}{% endif %}">{{ rp.display_title|default:rp.title|truncatewords:6 }}</a>
+                  </h5>
+                  <span class="recent-post-date"><i class="far fa-calendar-alt"></i> {{ rp.created_at|date:"d M Y" }}</span>
+                </div>
+              </div>
+              {% empty %}
               <div class="recent-post-item">
                 <div class="recent-post-thumb">
                   <img src="https://images.unsplash.com/photo-1570939274717-7eda259b50ed?auto=format&fit=crop&w=150&q=80" alt="Cappadocia">
@@ -211,7 +249,6 @@
                   <span class="recent-post-date"><i class="far fa-calendar-alt"></i> 18 Aug 2026</span>
                 </div>
               </div>
-
               <div class="recent-post-item">
                 <div class="recent-post-thumb">
                   <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=150&q=80" alt="Visa">
@@ -221,16 +258,7 @@
                   <span class="recent-post-date"><i class="far fa-calendar-alt"></i> 12 Aug 2026</span>
                 </div>
               </div>
-
-              <div class="recent-post-item">
-                <div class="recent-post-thumb">
-                  <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=150&q=80" alt="Bali">
-                </div>
-                <div>
-                  <h5 class="recent-post-title"><a href="{% url 'blog' %}">{{ t.blog_3_title|truncatewords:6 }}</a></h5>
-                  <span class="recent-post-date"><i class="far fa-calendar-alt"></i> 05 Aug 2026</span>
-                </div>
-              </div>
+              {% endfor %}
             </div>
 
             <!-- Promo Sidebar Banner -->

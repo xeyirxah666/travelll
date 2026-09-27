@@ -1435,29 +1435,31 @@ def get_translations(lang_code='az'):
 def localize_tour_object(tour, lang='az'):
     """
     Returns localized attributes for a Tour object based on the given language.
-    Does not mutate the database record, only dynamically provides translated fields.
+    Prioritizes database multilingual fields (_en, _ru), then fallback dictionary.
     """
     if not tour:
         return tour
 
-    if lang == 'az':
-        tour.display_title = tour.title
-        tour.display_short_description = tour.short_description
-        tour.display_group_size = tour.group_size
-        tour.display_guide_language = tour.guide_language
-        tour.display_visa_support = tour.visa_support
-        return tour
-
     tour_trans = TOUR_TRANSLATIONS.get(tour.title, {}).get(lang, {})
-    if tour_trans:
-        tour.display_title = tour_trans.get('title', tour.title)
-        tour.display_short_description = tour_trans.get('short_description', tour.short_description)
-        tour.display_group_size = tour_trans.get('group_size', tour.group_size)
-        tour.display_guide_language = tour_trans.get('guide_language', tour.guide_language)
-        tour.display_visa_support = tour_trans.get('visa_support', tour.visa_support)
+
+    if lang == 'en':
+        tour.display_title = getattr(tour, 'title_en', '') or tour_trans.get('title', '') or tour.title
+        tour.display_short_description = getattr(tour, 'short_description_en', '') or tour_trans.get('short_description', '') or tour.short_description
+        tour.display_description = getattr(tour, 'description_en', '') or tour_trans.get('description', '') or tour.description
+        tour.display_group_size = getattr(tour, 'group_size_en', '') or tour_trans.get('group_size', '') or tour.group_size
+        tour.display_guide_language = getattr(tour, 'guide_language_en', '') or tour_trans.get('guide_language', '') or tour.guide_language
+        tour.display_visa_support = getattr(tour, 'visa_support_en', '') or tour_trans.get('visa_support', '') or tour.visa_support
+    elif lang == 'ru':
+        tour.display_title = getattr(tour, 'title_ru', '') or tour_trans.get('title', '') or tour.title
+        tour.display_short_description = getattr(tour, 'short_description_ru', '') or tour_trans.get('short_description', '') or tour.short_description
+        tour.display_description = getattr(tour, 'description_ru', '') or tour_trans.get('description', '') or tour.description
+        tour.display_group_size = getattr(tour, 'group_size_ru', '') or tour_trans.get('group_size', '') or tour.group_size
+        tour.display_guide_language = getattr(tour, 'guide_language_ru', '') or tour_trans.get('guide_language', '') or tour.guide_language
+        tour.display_visa_support = getattr(tour, 'visa_support_ru', '') or tour_trans.get('visa_support', '') or tour.visa_support
     else:
         tour.display_title = tour.title
         tour.display_short_description = tour.short_description
+        tour.display_description = tour.description
         tour.display_group_size = tour.group_size
         tour.display_guide_language = tour.guide_language
         tour.display_visa_support = tour.visa_support
@@ -1465,30 +1467,52 @@ def localize_tour_object(tour, lang='az'):
     return tour
 
 
-def localize_category_name(cat_name, lang='az'):
-    if lang == 'az' or not cat_name:
-        return cat_name
+def localize_category_name(cat, lang='az'):
+    if not cat:
+        return ''
+    if lang == 'az':
+        return getattr(cat, 'name', cat)
+    if hasattr(cat, 'name_en'):
+        if lang == 'en' and cat.name_en:
+            return cat.name_en
+        if lang == 'ru' and cat.name_ru:
+            return cat.name_ru
+        cat_name = cat.name
+    else:
+        cat_name = str(cat)
     return CATEGORY_TRANSLATIONS.get(cat_name, {}).get(lang, cat_name)
 
 
-def localize_destination_name(dest_name, lang='az'):
-    if lang == 'az' or not dest_name:
-        return dest_name
+def localize_destination_name(dest, lang='az'):
+    if not dest:
+        return ''
+    if lang == 'az':
+        return getattr(dest, 'name', dest)
+    if hasattr(dest, 'name_en'):
+        if lang == 'en' and dest.name_en:
+            return dest.name_en
+        if lang == 'ru' and dest.name_ru:
+            return dest.name_ru
+        dest_name = dest.name
+    else:
+        dest_name = str(dest)
     return DESTINATION_TRANSLATIONS.get(dest_name, {}).get(lang, dest_name)
 
 
 def localize_blog_post(post, lang='az'):
     if not post:
         return post
-    if lang == 'az':
-        post.display_title = post.title
-        post.display_short_summary = post.short_summary
-        return post
     post_trans = BLOG_POST_TRANSLATIONS.get(post.title, {}).get(lang, {})
-    if post_trans:
-        post.display_title = post_trans.get('title', post.title)
-        post.display_short_summary = post_trans.get('short_summary', post.short_summary)
+    if lang == 'en':
+        post.display_title = getattr(post, 'title_en', '') or post_trans.get('title', '') or post.title
+        post.display_short_summary = getattr(post, 'short_summary_en', '') or post_trans.get('short_summary', '') or post.short_summary
+        post.display_content = getattr(post, 'content_en', '') or post_trans.get('content', '') or post.content
+    elif lang == 'ru':
+        post.display_title = getattr(post, 'title_ru', '') or post_trans.get('title', '') or post.title
+        post.display_short_summary = getattr(post, 'short_summary_ru', '') or post_trans.get('short_summary', '') or post.short_summary
+        post.display_content = getattr(post, 'content_ru', '') or post_trans.get('content', '') or post.content
     else:
         post.display_title = post.title
         post.display_short_summary = post.short_summary
+        post.display_content = post.content
     return post
