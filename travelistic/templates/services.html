@@ -267,6 +267,19 @@
       </div>
 
       <div class="itinerary-timeline" style="padding-left: 0;">
+        {% for faq in faqs %}
+        <div class="itinerary-item {% if forloop.first %}active{% endif %} reveal">
+          <div class="itinerary-header">
+            <span class="itinerary-day">
+              <i class="fas {{ faq.icon_class|default:'fa-question-circle' }}" style="color: var(--primary);"></i> {{ faq.display_question|default:faq.question }}
+            </span>
+            <i class="fas fa-chevron-down itinerary-toggle-icon"></i>
+          </div>
+          <div class="itinerary-body">
+            {{ faq.display_answer|default:faq.answer }}
+          </div>
+        </div>
+        {% empty %}
         <!-- FAQ 1 -->
         <div class="itinerary-item active reveal">
           <div class="itinerary-header">
@@ -318,6 +331,7 @@
             {{ t.faq_4_a }}
           </div>
         </div>
+        {% endfor %}
       </div>
     </div>
   </section>

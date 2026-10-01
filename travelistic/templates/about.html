@@ -30,7 +30,7 @@
               <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80" alt="Experience" onerror="this.src='https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80';">
             </div>
             <div class="experience-badge">
-              <div class="exp-years">{{ t.about_exp_years }}</div>
+              <div class="exp-years">{{ site_settings.about_experience_years|default:t.about_exp_years }}</div>
               <div>
                 <strong style="display: block; color: var(--dark); font-size: 1.05rem;">{{ t.about_exp_years_title }}</strong>
                 <span style="font-size: 0.82rem; color: var(--text-muted);">{{ t.about_exp_years_sub }}</span>
@@ -42,21 +42,21 @@
             <span class="section-subtitle"><i class="fas fa-history"></i> {{ t.about_story_subtitle }}</span>
             <h2 class="section-title">{{ t.about_story_title }}</h2>
             <p class="section-desc" style="margin-bottom: 1.25rem;">
-              {{ t.about_story_p1 }}
+              {{ site_settings.display_about_story_p1|default:t.about_story_p1 }}
             </p>
             <p class="section-desc" style="margin-bottom: 1.75rem;">
-              {{ t.about_story_p2 }}
+              {{ site_settings.display_about_story_p2|default:t.about_story_p2 }}
             </p>
 
             <div class="grid grid-2" style="gap: 1.25rem; margin-bottom: 2rem;">
               <div style="background: var(--bg-light); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--primary);">
                 <h4 style="font-size: 1.1rem; margin-bottom: 0.35rem;"><i class="fas fa-bullseye" style="color: var(--primary);"></i> {{ t.about_mission_title }}</h4>
-                <p style="font-size: 0.88rem; color: var(--text-muted);">{{ t.about_mission_desc }}</p>
+                <p style="font-size: 0.88rem; color: var(--text-muted);">{{ site_settings.display_about_mission_desc|default:t.about_mission_desc }}</p>
               </div>
 
               <div style="background: var(--bg-light); padding: 1.25rem; border-radius: var(--radius-md); border-left: 4px solid var(--accent);">
                 <h4 style="font-size: 1.1rem; margin-bottom: 0.35rem;"><i class="fas fa-eye" style="color: var(--accent);"></i> {{ t.about_vision_title }}</h4>
-                <p style="font-size: 0.88rem; color: var(--text-muted);">{{ t.about_vision_desc }}</p>
+                <p style="font-size: 0.88rem; color: var(--text-muted);">{{ site_settings.display_about_vision_desc|default:t.about_vision_desc }}</p>
               </div>
             </div>
 
@@ -77,6 +77,13 @@
         </div>
 
         <div class="grid grid-4">
+          {% for stat in stats %}
+          <div class="stat-item reveal">
+            <i class="fas {{ stat.icon_class|default:'fa-users' }} stat-icon"></i>
+            <div class="stat-number" data-target="{{ stat.number }}" data-suffix="{{ stat.display_suffix|default:stat.suffix }}">{{ stat.number }}{{ stat.display_suffix|default:stat.suffix }}</div>
+            <div class="stat-label">{{ stat.display_title|default:stat.title }}</div>
+          </div>
+          {% empty %}
           <div class="stat-item reveal">
             <i class="fas fa-users stat-icon"></i>
             <div class="stat-number" data-target="8500" data-suffix="+">{{ stats.travelers|default:t.stats_travelers_num }}</div>
@@ -97,6 +104,7 @@
             <div class="stat-number" data-target="150" data-suffix="+">{{ stats.hotels|default:t.stats_hotels_num }}</div>
             <div class="stat-label">{{ t.stats_hotels_label }}</div>
           </div>
+          {% endfor %}
         </div>
       </div>
     </section>
@@ -111,6 +119,21 @@
         </div>
 
         <div class="grid grid-4">
+          {% for member in team_members %}
+          <div class="team-card reveal">
+            <div class="team-thumb">
+              <img src="{{ member.photo|default:'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80' }}" alt="{{ member.name }}" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80';">
+              <div class="team-socials">
+                <a href="{{ member.linkedin_url|default:'#' }}" target="_blank" rel="noopener noreferrer" class="team-social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="{{ member.instagram_url|default:'#' }}" target="_blank" rel="noopener noreferrer" class="team-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+              </div>
+            </div>
+            <div class="team-body">
+              <h3 class="team-name">{{ member.name }}</h3>
+              <p class="team-role">{{ member.display_role|default:member.role }}</p>
+            </div>
+          </div>
+          {% empty %}
           <!-- Member 1 -->
           <div class="team-card reveal">
             <div class="team-thumb">
@@ -125,51 +148,7 @@
               <p class="team-role">{{ t.about_member_1_role }}</p>
             </div>
           </div>
-
-          <!-- Member 2 -->
-          <div class="team-card reveal">
-            <div class="team-thumb">
-              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80" alt="{{ t.about_member_2_name }}" onerror="this.src='https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80';">
-              <div class="team-socials">
-                <a href="#" class="team-social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" class="team-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-              </div>
-            </div>
-            <div class="team-body">
-              <h3 class="team-name">{{ t.about_member_2_name }}</h3>
-              <p class="team-role">{{ t.about_member_2_role }}</p>
-            </div>
-          </div>
-
-          <!-- Member 3 -->
-          <div class="team-card reveal">
-            <div class="team-thumb">
-              <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80" alt="{{ t.about_member_3_name }}" onerror="this.src='https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80';">
-              <div class="team-socials">
-                <a href="#" class="team-social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" class="team-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-              </div>
-            </div>
-            <div class="team-body">
-              <h3 class="team-name">{{ t.about_member_3_name }}</h3>
-              <p class="team-role">{{ t.about_member_3_role }}</p>
-            </div>
-          </div>
-
-          <!-- Member 4 -->
-          <div class="team-card reveal">
-            <div class="team-thumb">
-              <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80" alt="{{ t.about_member_4_name }}" onerror="this.src='https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80';">
-              <div class="team-socials">
-                <a href="#" class="team-social-btn" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" class="team-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-              </div>
-            </div>
-            <div class="team-body">
-              <h3 class="team-name">{{ t.about_member_4_name }}</h3>
-              <p class="team-role">{{ t.about_member_4_role }}</p>
-            </div>
-          </div>
+          {% endfor %}
         </div>
       </div>
     </section>
@@ -183,11 +162,22 @@
           </p>
         </div>
         <div class="flex-between align-center" style="flex-wrap: wrap; gap: 2rem; opacity: 0.75; justify-content: center;">
+          {% for partner in partners %}
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--dark); display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i class="fas {{ partner.icon_class|default:'fa-plane' }}" style="color: var(--primary);"></i>
+            {% if partner.website_url %}
+              <a href="{{ partner.website_url }}" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">{{ partner.name }}</a>
+            {% else %}
+              <span>{{ partner.name }}</span>
+            {% endif %}
+          </div>
+          {% empty %}
           <div style="font-size: 1.5rem; font-weight: 800; color: var(--dark);"><i class="fas fa-plane"></i> Turkish Airlines</div>
           <div style="font-size: 1.5rem; font-weight: 800; color: var(--dark);"><i class="fas fa-plane"></i> Emirates</div>
           <div style="font-size: 1.5rem; font-weight: 800; color: var(--dark);"><i class="fas fa-plane"></i> Qatar Airways</div>
           <div style="font-size: 1.5rem; font-weight: 800; color: var(--dark);"><i class="fas fa-plane"></i> Lufthansa</div>
           <div style="font-size: 1.5rem; font-weight: 800; color: var(--dark);"><i class="fas fa-hotel"></i> Marriott Bonvoy</div>
+          {% endfor %}
         </div>
       </div>
     </section>

@@ -1,8 +1,27 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.conf import settings
 from django.utils import translation
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from urllib.parse import urlparse
-from .models import Tour, Category, Destination, BlogPost, BlogComment, Testimonial, ContactMessage
+import json
+
+from .models import (
+    Tour,
+    Category,
+    Destination,
+    BlogPost,
+    BlogComment,
+    Testimonial,
+    ContactMessage,
+    Feature,
+    CompanyStatistic,
+    TeamMember,
+    FAQ,
+    Partner,
+    TourBooking,
+    NewsletterSubscriber,
+)
 from .translations import (
     get_translations,
     localize_tour_object,
@@ -10,6 +29,59 @@ from .translations import (
     localize_destination_name,
     localize_blog_post,
 )
+
+def localize_feature(feat, lang='az'):
+    if not feat:
+        return feat
+    if lang == 'en':
+        feat.display_title = feat.title_en or feat.title
+        feat.display_description = feat.description_en or feat.description
+    elif lang == 'ru':
+        feat.display_title = feat.title_ru or feat.title
+        feat.display_description = feat.description_ru or feat.description
+    else:
+        feat.display_title = feat.title
+        feat.display_description = feat.description
+    return feat
+
+def localize_statistic(stat, lang='az'):
+    if not stat:
+        return stat
+    if lang == 'en':
+        stat.display_title = stat.title_en or stat.title
+        stat.display_suffix = stat.suffix_en or stat.suffix
+    elif lang == 'ru':
+        stat.display_title = stat.title_ru or stat.title
+        stat.display_suffix = stat.suffix_ru or stat.suffix
+    else:
+        stat.display_title = stat.title
+        stat.display_suffix = stat.suffix
+    return stat
+
+def localize_team_member(member, lang='az'):
+    if not member:
+        return member
+    if lang == 'en':
+        member.display_role = member.role_en or member.role
+    elif lang == 'ru':
+        member.display_role = member.role_ru or member.role
+    else:
+        member.display_role = member.role
+    return member
+
+def localize_faq(faq, lang='az'):
+    if not faq:
+        return faq
+    if lang == 'en':
+        faq.display_question = faq.question_en or faq.question
+        faq.display_answer = faq.answer_en or faq.answer
+    elif lang == 'ru':
+        faq.display_question = faq.question_ru or faq.question
+        faq.display_answer = faq.answer_ru or faq.answer
+    else:
+        faq.display_question = faq.question
+        faq.display_answer = faq.answer
+    return faq
 
 def set_language_view(request, lang_code):
     """
@@ -76,12 +148,22 @@ def home_view(request):
     for post in latest_blogs:
         localize_blog_post(post, lang)
 
+    features = list(Feature.objects.filter(is_active=True).order_by('order'))
+    for feat in features:
+        localize_feature(feat, lang)
+
+    stats = list(CompanyStatistic.objects.all().order_by('order'))
+    for stat in stats:
+        localize_statistic(stat, lang)
+
     context = {
         'featured_tours': featured_tours,
         'categories': categories,
         'destinations': destinations,
         'testimonials': testimonials,
         'latest_blogs': latest_blogs,
+        'features': features,
+        'stats': stats,
     }
     return render(request, 'index.html', context)
 
@@ -100,7 +182,15 @@ def services_view(request):
     for cat in categories:
         cat.display_name = localize_category_name(cat.name, lang)
 
-    return render(request, 'services.html', {'tours': tour_list, 'categories': categories})
+    faqs = list(FAQ.objects.filter(is_active=True).order_by('order'))
+    for f in faqs:
+        localize_faq(f, lang)
+
+    return render(request, 'services.html', {
+        'tours': tour_list,
+        'categories': categories,
+        'faqs': faqs
+    })
 
 def service_detail_view(request, slug):
     lang = _get_current_lang(request)
@@ -116,13 +206,22 @@ def service_detail_view(request, slug):
 def about_view(request):
     lang = _get_current_lang(request)
     t = get_translations(lang)
-    stats = {
-        'travelers': '8,500+',
-        'visas': '4,200+',
-        'routes': '54' + t.get('stats_suffix_countries', ' Ölkə'),
-        'hotels': '150+',
-    }
-    return render(request, 'about.html', {'stats': stats})
+
+    stats = list(CompanyStatistic.objects.all().order_by('order'))
+    for s in stats:
+        localize_statistic(s, lang)
+
+    team_members = list(TeamMember.objects.filter(is_active=True).order_by('order'))
+    for tm in team_members:
+        localize_team_member(tm, lang)
+
+    partners = list(Partner.objects.filter(is_active=True).order_by('order'))
+
+    return render(request, 'about.html', {
+        'stats': stats,
+        'team_members': team_members,
+        'partners': partners,
+    })
 
 def blog_view(request):
     from django.core.paginator import Paginator
@@ -175,4 +274,98 @@ def blog_detail_view(request, slug=''):
     return render(request, 'blog-single.html', {'post': post, 'recent_posts': recent_posts})
 
 def contact_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        email = request.POST.get('email', '').strip()
+        service = request.POST.get('service', '').strip()
+        message = request.POST.get('message', '').strip()
+        if name and (email or phone):
+            ContactMessage.objects.create(
+                name=name,
+                phone=phone,
+                email=email,
+                service=service,
+                message=message
+            )
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.POST.get('ajax'):
+            return JsonResponse({'success': True})
+        return render(request, 'contact.html', {'submitted': True})
+
     return render(request, 'contact.html')
+
+@csrf_exempt
+def book_tour_ajax(request):
+    """
+    Receives booking modal submissions and stores them in TourBooking model.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Yalnız POST sorğusu qəbul olunur.'}, status=405)
+
+    if request.content_type == 'application/json':
+        try:
+            data = json.loads(request.body)
+        except Exception:
+            data = {}
+    else:
+        data = request.POST
+
+    full_name = (data.get('name') or data.get('full_name') or '').strip()
+    phone = (data.get('phone') or '').strip()
+    email = (data.get('email') or '').strip()
+    tour_name = (data.get('tour') or data.get('tour_name') or '').strip()
+    travel_date = (data.get('date') or data.get('travel_date') or '').strip()
+    guests_count = (data.get('guests') or data.get('guests_count') or '').strip()
+    notes = (data.get('notes') or '').strip()
+
+    if not full_name or not (phone or email):
+        return JsonResponse({'success': False, 'error': 'Zəhmət olmasa ad və əlaqə vasitəsini (telefon və ya email) daxil edin.'}, status=400)
+
+    tour_obj = None
+    if tour_name:
+        tour_obj = Tour.objects.filter(title__iexact=tour_name).first()
+
+    booking = TourBooking.objects.create(
+        tour=tour_obj,
+        tour_name=tour_name,
+        full_name=full_name,
+        phone=phone,
+        email=email,
+        travel_date=travel_date,
+        guests_count=guests_count,
+        notes=notes
+    )
+
+    return JsonResponse({
+        'success': True,
+        'booking_id': booking.id,
+        'message': 'Rezervasiya uğurla qeydə alındı.'
+    })
+
+@csrf_exempt
+def subscribe_newsletter_ajax(request):
+    """
+    Receives newsletter subscriptions and stores in NewsletterSubscriber.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Yalnız POST sorğusu qəbul olunur.'}, status=405)
+
+    if request.content_type == 'application/json':
+        try:
+            data = json.loads(request.body)
+        except Exception:
+            data = {}
+    else:
+        data = request.POST
+
+    email = (data.get('email') or '').strip().lower()
+    if not email or '@' not in email:
+        return JsonResponse({'success': False, 'error': 'Düzgün e-poçt ünvanı daxil edin.'}, status=400)
+
+    sub, created = NewsletterSubscriber.objects.get_or_create(email=email)
+    return JsonResponse({
+        'success': True,
+        'created': created,
+        'message': 'Abunəlik uğurla tamamlandı.'
+    })
+

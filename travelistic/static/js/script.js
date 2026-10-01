@@ -375,6 +375,18 @@ document.addEventListener('DOMContentLoaded', () => {
       modalForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const i18n = window.I18N_STRINGS || {};
+        
+        const formData = new FormData(modalForm);
+        const selectedTourEl = document.querySelector('#modal-tour-name');
+        if (selectedTourEl) {
+          formData.append('tour', selectedTourEl.textContent.trim());
+        }
+
+        fetch('/api/book-tour/', {
+          method: 'POST',
+          body: formData
+        }).then(res => res.json()).catch(err => console.error('Booking request error:', err));
+
         showToast(i18n.booking_success || 'Təşəkkür edirik! Rezervasiya sorğunuz qəbul edildi. Menecerimiz 15 dəqiqə ərzində sizinlə əlaqə saxlayacaq.', 'success');
         modalOverlay.classList.remove('active');
         document.body.style.overflow = 'auto';
@@ -391,6 +403,14 @@ document.addEventListener('DOMContentLoaded', () => {
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const i18n = window.I18N_STRINGS || {};
+      const formData = new FormData(contactForm);
+      formData.append('ajax', '1');
+
+      fetch('/contact/', {
+        method: 'POST',
+        body: formData
+      }).then(res => res.json()).catch(err => console.error('Contact submit error:', err));
+
       showToast(i18n.contact_success || 'Təşəkkür edirik! Mesajınız uğurla göndərildi. Tezliklə cavablandırılacaq.', 'success');
       contactForm.reset();
     });
@@ -403,6 +423,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const i18n = window.I18N_STRINGS || {};
       const emailInput = form.querySelector('input[type="email"]');
       if (emailInput && emailInput.value.trim() !== '') {
+        const formData = new FormData(form);
+        fetch('/api/subscribe-newsletter/', {
+          method: 'POST',
+          body: formData
+        }).then(res => res.json()).catch(err => console.error('Newsletter error:', err));
+
         showToast(i18n.newsletter_success || 'Təbrik edirik! VIP səyahət təkliflərinə uğurla abunə oldunuz 🎁', 'success');
         form.reset();
       } else {

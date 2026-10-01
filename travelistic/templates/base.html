@@ -27,17 +27,17 @@
   <div class="top-bar">
     <div class="container top-bar-inner">
       <div class="top-bar-info">
-        <a href="tel:+994125557788"><i class="fas fa-phone-alt"></i> {{ t.phone_label }}</a>
-        <a href="mailto:info@travelistic.az"><i class="fas fa-envelope"></i> {{ t.email_label }}</a>
-        <span><i class="fas fa-map-marker-alt"></i> {{ t.address_label }}</span>
+        <a href="tel:{{ site_settings.phone|default:'+994125557788' }}"><i class="fas fa-phone-alt"></i> {{ site_settings.phone|default:t.phone_label }}</a>
+        <a href="mailto:{{ site_settings.email|default:'info@travelistic.az' }}"><i class="fas fa-envelope"></i> {{ site_settings.email|default:t.email_label }}</a>
+        <span><i class="fas fa-map-marker-alt"></i> {{ site_settings.display_address|default:t.address_label }}</span>
       </div>
       <div class="top-bar-right">
         <div class="top-bar-social">
           <span>{{ t.follow_us }}</span>
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-          <a href="https://t.me" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
-          <a href="https://wa.me/994501234567" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="{{ site_settings.facebook_url|default:'https://facebook.com' }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="{{ site_settings.instagram_url|default:'https://instagram.com' }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="{{ site_settings.telegram_url|default:'https://t.me' }}" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+          <a href="https://wa.me/{{ site_settings.whatsapp_number|default:'994505557788' }}" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
         </div>
 
         <!-- Topbar Language Switcher -->
@@ -149,10 +149,10 @@
             {{ t.footer_desc }}
           </p>
           <div class="footer-social-links">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://t.me" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
-            <a href="https://wa.me/994501234567" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            <a href="{{ site_settings.facebook_url|default:'https://facebook.com' }}" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="{{ site_settings.instagram_url|default:'https://instagram.com' }}" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="{{ site_settings.telegram_url|default:'https://t.me' }}" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="https://wa.me/{{ site_settings.whatsapp_number|default:'994505557788' }}" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
           </div>
         </div>
 
@@ -182,19 +182,19 @@
           <h4 class="footer-title">{{ t.footer_contact_info }}</h4>
           <div class="footer-contact-item">
             <i class="fas fa-map-marker-alt"></i>
-            <span>{{ t.address_label }}</span>
+            <span>{{ site_settings.display_address|default:t.address_label }}</span>
           </div>
           <div class="footer-contact-item">
             <i class="fas fa-phone-alt"></i>
-            <span>{{ t.phone_label }}</span>
+            <span>{{ site_settings.phone|default:t.phone_label }}</span>
           </div>
           <div class="footer-contact-item">
             <i class="fas fa-envelope"></i>
-            <span>{{ t.email_label }}</span>
+            <span>{{ site_settings.email|default:t.email_label }}</span>
           </div>
           <div class="footer-contact-item">
             <i class="fas fa-clock"></i>
-            <span>{{ t.footer_hours }}</span>
+            <span>{{ site_settings.display_working_hours|default:t.footer_hours }}</span>
           </div>
         </div>
       </div>

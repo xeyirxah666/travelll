@@ -7,19 +7,19 @@
 {% block content %}
 <main>
     <!-- Hero -->
-    <section class="hero" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');">
+    <section class="hero" style="background-image: url('{{ site_settings.hero_image|default:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80" }}');">
       <div class="hero-overlay"></div>
       <div class="hero-shapes"></div>
       <div class="container">
         <div class="hero-content">
           <div class="hero-badge">
-            <i class="fas fa-crown"></i> {{ t.hero_badge }}
+            <i class="fas fa-crown"></i> {{ site_settings.display_hero_badge|default:t.hero_badge }}
           </div>
           <h1 class="hero-title">
-            {{ t.hero_title_p1 }} <span>{{ t.hero_title_p2 }}</span>
+            {{ site_settings.display_hero_title_p1|default:t.hero_title_p1 }} <span>{{ site_settings.display_hero_title_p2|default:t.hero_title_p2 }}</span>
           </h1>
           <p class="hero-desc">
-            {{ t.hero_desc }}
+            {{ site_settings.display_hero_desc|default:t.hero_desc }}
           </p>
 
           <div class="hero-actions reveal">
@@ -44,6 +44,15 @@
         </div>
 
         <div class="grid grid-4">
+          {% for feature in features %}
+          <div class="feature-card reveal">
+            <div class="feature-icon-box">
+              <i class="fas {{ feature.icon_class|default:'fa-shield-alt' }}"></i>
+            </div>
+            <h3 class="feature-title">{{ feature.display_title|default:feature.title }}</h3>
+            <p class="feature-desc">{{ feature.display_description|default:feature.description }}</p>
+          </div>
+          {% empty %}
           <div class="feature-card reveal">
             <div class="feature-icon-box">
               <i class="fas fa-passport"></i>
@@ -75,6 +84,7 @@
             <h3 class="feature-title">{{ t.feat_insurance_title }}</h3>
             <p class="feature-desc">{{ t.feat_insurance_desc }}</p>
           </div>
+          {% endfor %}
         </div>
       </div>
     </section>
@@ -180,6 +190,13 @@
     <section class="section stats-section">
       <div class="container">
         <div class="grid grid-4">
+          {% for stat in stats %}
+          <div class="stat-item reveal">
+            <i class="fas {{ stat.icon_class|default:'fa-users' }} stat-icon"></i>
+            <div class="stat-number" data-target="{{ stat.number }}" data-suffix="{{ stat.display_suffix|default:stat.suffix }}">{{ stat.number }}{{ stat.display_suffix|default:stat.suffix }}</div>
+            <div class="stat-label">{{ stat.display_title|default:stat.title }}</div>
+          </div>
+          {% empty %}
           <div class="stat-item reveal">
             <i class="fas fa-users stat-icon"></i>
             <div class="stat-number" data-target="8500" data-suffix="+">{{ t.stats_travelers_num }}</div>
@@ -203,6 +220,7 @@
             <div class="stat-number" data-target="99" data-suffix="%">{{ t.stats_rating_num }}</div>
             <div class="stat-label">{{ t.stats_rating_label }}</div>
           </div>
+          {% endfor %}
         </div>
       </div>
     </section>
